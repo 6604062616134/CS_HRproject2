@@ -10,6 +10,7 @@ function StaffProject() {
     const [searchTermYear, setSearchTermYear] = useState(''); // เก็บค่าปีการศึกษาที่เลือก
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // สำหรับเปิด/ปิดดรอปดาวน์
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์
+    const [role, setRole] = useState(''); // เก็บข้อมูล role ของผู้ใช้
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,8 +43,27 @@ function StaffProject() {
         };
     }, []);
 
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/user/getUser', {
+                    withCredentials: true,
+                });
+                setRole(response.data.role); // ตั้งค่า role จาก API
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+            }
+        };
+
+        fetchUserRole();
+    }, []);
+
     const handleEditClick = (item) => {
-        setEditData({ ...item });
+        console.log('Selected item:', item); // ตรวจสอบข้อมูลที่เลือก
+        setEditData({
+            ...item,
+            checked: item.checked !== null && item.checked !== undefined ? item.checked : 0, // ตั้งค่า default เป็น 0
+        });
         setIsEditModalOpen(true);
     };
 
@@ -97,7 +117,7 @@ function StaffProject() {
                             placeholder="ค้นหา..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full px-4 py-2 border text-xs rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-4 py-2 border text-xs rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                         />
                     </div>
                     <div className="relative" ref={dropdownRef}>
@@ -149,21 +169,23 @@ function StaffProject() {
                     <table className="w-full bg-white border border-gray-300 rounded-3xl print-cell">
                         <thead>
                             <tr className="bg-gray-200 text-gray-700">
-                                <th className="px-4 py-2 border text-xs">รหัสนักศึกษา</th>
+                                <th className="px-4 py-2 border text-xs w-10">ลำดับ</th>
+                                <th className="px-4 py-2 border text-xs w-24">รหัสนักศึกษา</th>
                                 <th className="px-4 py-2 border text-xs">ชื่อนักศึกษา</th>
                                 <th className="px-4 py-2 border text-xs">ชื่อโปรเจค</th>
-                                <th className="px-4 py-2 border text-xs w-24">ปีการศึกษา</th>
-                                <th className="px-4 py-2 border text-xs w-24">อาจารย์ที่ปรึกษา</th>
-                                <th className="px-4 py-2 border text-xs w-24">เจ้าหน้าที่</th>
-                                <th className="px-4 py-2 border text-xs w-28">สถานะการตรวจ</th>
+                                <th className="px-4 py-2 border text-xs w-20">ปีการศึกษา</th>
+                                <th className="px-4 py-2 border text-xs w-20">อาจารย์ที่ปรึกษา</th>
+                                <th className="px-4 py-2 border text-xs w-20">เจ้าหน้าที่</th>
+                                <th className="px-4 py-2 border text-xs w-24">สถานะการตรวจ</th>
                                 <th className="px-4 py-2 border text-xs w-24">หมายเหตุ</th>
-                                <th className="px-4 py-2 border text-xs print:hidden w-24">แก้ไข</th>
+                                <th className="px-4 py-2 border text-xs print:hidden w-20">แก้ไข</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredData.length > 0 ? (
                                 filteredData.map((item, index) => (
                                     <tr key={index} className="text-center">
+                                        <td className="px-4 py-2 border text-xs">{index + 1}</td>
                                         <td className="px-4 py-2 border text-xs break-words whitespace-normal">
                                             {item.studentID_1 || '-'} <br /> {item.studentID_2 || '-'}
                                         </td>
@@ -183,12 +205,14 @@ function StaffProject() {
                                             {item.note || '-'}
                                         </td>
                                         <td className="px-4 py-2 border text-xs text-center print:hidden">
-                                            <button
-                                                className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
-                                                onClick={() => handleEditClick(item)}
-                                            >
-                                                แก้ไข
-                                            </button>
+                                            {role === 'superadmin' && (
+                                                <button
+                                                    className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
+                                                    onClick={() => handleEditClick(item)}
+                                                >
+                                                    แก้ไข
+                                                </button>
+                                            )}
                                         </td>
                                     </tr>
                                 ))
@@ -241,7 +265,7 @@ function StaffProject() {
                                         name="thesisNameTH"
                                         value={editData?.thesisNameTH || ''}
                                         onChange={(e) => setEditData({ ...editData, thesisNameTH: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -253,7 +277,7 @@ function StaffProject() {
                                         name="thesisNameEN"
                                         value={editData?.thesisNameEN || ''}
                                         onChange={(e) => setEditData({ ...editData, thesisNameEN: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -265,7 +289,7 @@ function StaffProject() {
                                         name="studentName1"
                                         value={editData?.studentName1 || ''}
                                         onChange={(e) => setEditData({ ...editData, studentName1: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -277,7 +301,7 @@ function StaffProject() {
                                         name="studentName2"
                                         value={editData?.studentName2 || ''}
                                         onChange={(e) => setEditData({ ...editData, studentName2: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -289,7 +313,7 @@ function StaffProject() {
                                         name="studentID_1"
                                         value={editData?.studentID_1 || ''}
                                         onChange={(e) => setEditData({ ...editData, studentID_1: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -301,7 +325,7 @@ function StaffProject() {
                                         name="studentID_2"
                                         value={editData?.studentID_2 || ''}
                                         onChange={(e) => setEditData({ ...editData, studentID_2: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -313,7 +337,7 @@ function StaffProject() {
                                         name="year"
                                         value={editData?.year || ''}
                                         onChange={(e) => setEditData({ ...editData, year: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="เช่น 2/2567"
                                     />
                                 </div>
@@ -326,7 +350,7 @@ function StaffProject() {
                                         name="teacherName"
                                         value={editData?.teacherName || ''}
                                         onChange={(e) => setEditData({ ...editData, teacherName: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
 
@@ -338,7 +362,7 @@ function StaffProject() {
                                         name="staffName"
                                         value={editData?.staffName || ''}
                                         onChange={(e) => setEditData({ ...editData, staffName: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
                             </div>
@@ -351,7 +375,7 @@ function StaffProject() {
                                         name="note"
                                         value={editData?.note || ''}
                                         onChange={(e) => setEditData({ ...editData, note: e.target.value })}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         rows="3"
                                     />
                                 </div>
@@ -364,7 +388,7 @@ function StaffProject() {
                                                 type="radio"
                                                 name="checked"
                                                 value="1"
-                                                checked={editData?.checked === 1}
+                                                checked={editData?.checked === 1} // ตรวจสอบว่าค่า checked เป็น 1
                                                 onChange={() => setEditData({ ...editData, checked: 1 })}
                                             />
                                             ตรวจแล้ว
@@ -374,7 +398,7 @@ function StaffProject() {
                                                 type="radio"
                                                 name="checked"
                                                 value="0"
-                                                checked={editData?.checked === 0}
+                                                checked={editData?.checked === 0} // ตรวจสอบว่าค่า checked เป็น 0
                                                 onChange={() => setEditData({ ...editData, checked: 0 })}
                                             />
                                             ยังไม่ตรวจ

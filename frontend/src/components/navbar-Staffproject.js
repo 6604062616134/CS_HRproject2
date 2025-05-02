@@ -189,15 +189,23 @@ function NavbarStaffProject() {
                         <button onClick={handleToggle} className="text-white text-xl z-10">
                             {isMenuOpen ? '✕' : '☰'}
                         </button>
-                        <div className="text-white text-lg font-bold">HR-CS</div>
+                        <div className="text-white text-lg font-bold">
+                            HR-CS {role === 'superadmin' && (
+                                <span className="text-yellow-400 text-sm font-light">
+                                    (super admin)
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className='flex items-center gap-4'>
-                        <button
-                            className="px-3 py-1 bg-white text-xs text-black rounded-3xl shadow-lg hover:bg-green-600 hover:scale-105 hover:text-white transition-all duration-300 ease-in-out"
-                            onClick={handleModalToggle}
-                        >
-                            เพิ่มข้อมูล
-                        </button>
+                        {role === 'superadmin' && (
+                            <button
+                                className="px-3 py-1 bg-white text-xs text-black rounded-3xl shadow-lg hover:bg-green-600 hover:scale-105 hover:text-white transition-all duration-300 ease-in-out"
+                                onClick={handleModalToggle}
+                            >
+                                เพิ่มข้อมูล
+                            </button>
+                        )}
                         <button
                             className="text-white underline text-xs hover:text-red-600 transition-all duration-300 ease-in-out"
                             onClick={handleLogout}

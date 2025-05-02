@@ -201,7 +201,7 @@ function Assign() {
                                 type="text"
                                 value={eventName}
                                 onChange={(e) => setEventName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 placeholder="ชื่อกิจกรรม"
                                 required
                             />
@@ -214,7 +214,7 @@ function Assign() {
                                     type="date"
                                     value={eventDateStart}
                                     onChange={(e) => setEventDateStart(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
                             </div>
                             <div className="flex-1">
@@ -223,7 +223,7 @@ function Assign() {
                                     type="date"
                                     value={eventDateEnd}
                                     onChange={(e) => setEventDateEnd(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
                             </div>
                         </div>
@@ -234,7 +234,7 @@ function Assign() {
                                 type="text"
                                 value={number}
                                 onChange={(e) => setNumber(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 placeholder="เลขคำสั่ง"
                             />
                         </div>
@@ -245,7 +245,7 @@ function Assign() {
                                 type="text"
                                 value={docName}
                                 onChange={(e) => setDocName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300"
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 placeholder="ชื่อเอกสาร"
                                 required
                             />
@@ -255,7 +255,7 @@ function Assign() {
                             <textarea
                                 value={detail}
                                 onChange={(e) => setDetail(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300 h-40 resize-none"
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-40 resize-none"
                                 placeholder="รายละเอียดงาน"
                                 required
                             />
@@ -375,7 +375,7 @@ function Assign() {
                             <textarea
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-gray-300 h-24 resize-none" // ลดความสูงจาก h-40 เป็น h-32
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-24 resize-none" // ลดความสูงจาก h-40 เป็น h-32
                                 placeholder="ลิงก์google drive"
                             />
                         </div>

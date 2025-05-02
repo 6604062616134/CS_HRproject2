@@ -4,6 +4,7 @@ import Navbar from '../components/navbar';
 
 function Admin() {
     const [users, setUsers] = useState([]); // เก็บข้อมูลผู้ใช้
+    const [isEditMode, setIsEditMode] = useState(false); // true = แก้ไข, false = เพิ่ม
     const [isModalOpen, setIsModalOpen] = useState(false); // ควบคุมการแสดงผลของ Modal
     const [editUser, setEditUser] = useState(null); // เก็บข้อมูลผู้ใช้ที่ต้องการแก้ไข
 
@@ -24,6 +25,7 @@ function Admin() {
 
     const handleEditClick = (user) => {
         setEditUser(user); // ตั้งค่าผู้ใช้ที่ต้องการแก้ไข
+        setIsEditMode(true); // เปิดโหมดแก้ไข
         setIsModalOpen(true); // เปิด Modal
     };
 
@@ -34,6 +36,7 @@ function Admin() {
 
     const handleAddUserClick = () => {
         setEditUser({ username: '', password: '', role: '' }); // ตั้งค่าเริ่มต้นสำหรับผู้ใช้ใหม่
+        setIsEditMode(false); // เปิดโหมดเพิ่ม
         setIsModalOpen(true); // เปิด Modal
     };
 
@@ -148,86 +151,42 @@ function Admin() {
                 </div>
             </div>
 
-            {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-96">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold">แก้ไขข้อมูลผู้ใช้</h3>
-                            <button
-                                className="px-2 py-1 bg-red-600 text-xs text-white rounded-3xl hover:bg-red-700 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={handleDelete}
-                            >
-                                ลบผู้ใช้
-                            </button>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Username</label>
-                            <input
-                                type="text"
-                                value={editUser.username}
-                                onChange={(e) => setEditUser({ ...editUser, username: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Role</label>
-                            <input
-                                type="text"
-                                value={editUser.role}
-                                onChange={(e) => setEditUser({ ...editUser, role: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2"
-                            />
-                        </div>
-                        <div className="flex justify-end space-x-2">
-                            <button
-                                className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={handleModalClose}
-                            >
-                                ยกเลิก
-                            </button>
-                            <button
-                                className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={handleSave}
-                            >
-                                บันทึก
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-3xl shadow-lg w-96">
                         <h3 className="text-lg font-semibold mb-4">
-                            {editUser && editUser.id ? 'แก้ไขข้อมูลผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
+                            {isEditMode ? 'แก้ไขข้อมูลผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
                         </h3>
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">Username</label>
                             <input
                                 type="text"
                                 value={editUser.username}
+                                placeholder="username"
                                 onChange={(e) => setEditUser({ ...editUser, username: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2"
+                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Password</label>
-                            <input
-                                type="password"
-                                value={editUser.password}
-                                onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2"
-                            />
-                        </div>
+                        {!isEditMode && (
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">Password</label>
+                                <input
+                                    type="password"
+                                    value={editUser.password}
+                                    placeholder="password"
+                                    onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                        )}
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">Role</label>
                             <input
                                 type="text"
                                 value={editUser.role}
+                                placeholder="role"
                                 onChange={(e) => setEditUser({ ...editUser, role: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2"
+                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
                         <div className="flex justify-end space-x-2">
@@ -241,7 +200,7 @@ function Admin() {
                                 className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={handleSave}
                             >
-                                {editUser && editUser.id ? 'บันทึก' : 'เพิ่ม'}
+                                {isEditMode ? 'บันทึก' : 'เพิ่ม'}
                             </button>
                         </div>
                     </div>

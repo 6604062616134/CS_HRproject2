@@ -121,7 +121,7 @@ function Project() {
                             placeholder="ค้นหา..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="flex-grow px-4 py-2 border rounded-3xl text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="flex-grow px-4 py-2 border rounded-3xl text-xs focus:outline-none focus:ring-2 focus:ring-[#000066]"
                         />
                         <div className="relative" ref={dropdownRef}>
                             <div
@@ -289,7 +289,7 @@ function Project() {
                                                 name="datetime"
                                                 value={editData?.datetime || ''}
                                                 onChange={(e) => setEditData({ ...editData, datetime: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-[2] min-w-[300px]">
@@ -299,7 +299,7 @@ function Project() {
                                                 name="thesisnameTH"
                                                 value={editData?.thesisnameTH || ''}
                                                 onChange={(e) => setEditData({ ...editData, thesisnameTH: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-[2] min-w-[300px]">
@@ -309,7 +309,7 @@ function Project() {
                                                 name="thesisnameEN"
                                                 value={editData?.thesisnameEN || ''}
                                                 onChange={(e) => setEditData({ ...editData, thesisnameEN: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -319,7 +319,7 @@ function Project() {
                                                 name="studentCode1"
                                                 value={editData?.studentCode1 || ''}
                                                 onChange={(e) => setEditData({ ...editData, studentCode1: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -329,7 +329,7 @@ function Project() {
                                                 name="studentCode2"
                                                 value={editData?.studentCode2 || ''}
                                                 onChange={(e) => setEditData({ ...editData, studentCode2: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-[2] min-w-[300px]">
@@ -339,7 +339,7 @@ function Project() {
                                                 name="FLname1"
                                                 value={editData?.FLname1 || ''}
                                                 onChange={(e) => setEditData({ ...editData, FLname1: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-[2] min-w-[300px]">
@@ -349,7 +349,7 @@ function Project() {
                                                 name="FLname2"
                                                 value={editData?.FLname2 || ''}
                                                 onChange={(e) => setEditData({ ...editData, FLname2: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -359,7 +359,7 @@ function Project() {
                                                 name="chairman"
                                                 value={editData?.chairman || ''}
                                                 onChange={(e) => setEditData({ ...editData, chairman: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -369,7 +369,7 @@ function Project() {
                                                 name="director"
                                                 value={editData?.director || ''}
                                                 onChange={(e) => setEditData({ ...editData, director: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -379,7 +379,7 @@ function Project() {
                                                 name="MainMentor"
                                                 value={editData?.MainMentor || ''}
                                                 onChange={(e) => setEditData({ ...editData, MainMentor: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -389,7 +389,7 @@ function Project() {
                                                 name="CoMentor"
                                                 value={editData?.CoMentor || ''}
                                                 onChange={(e) => setEditData({ ...editData, CoMentor: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -399,7 +399,7 @@ function Project() {
                                                 name="year"
                                                 value={editData?.year || ''}
                                                 onChange={(e) => setEditData({ ...editData, year: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -409,7 +409,7 @@ function Project() {
                                                 name="room"
                                                 value={editData?.room || ''}
                                                 onChange={(e) => setEditData({ ...editData, room: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-1 min-w-[150px]">
@@ -419,7 +419,7 @@ function Project() {
                                                 name="grade"
                                                 value={editData?.grade || ''}
                                                 onChange={(e) => setEditData({ ...editData, grade: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                         <div className="flex-[2] min-w-[300px]">
@@ -428,7 +428,7 @@ function Project() {
                                                 name="note"
                                                 value={editData?.note || ''}
                                                 onChange={(e) => setEditData({ ...editData, note: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
                                     </div>

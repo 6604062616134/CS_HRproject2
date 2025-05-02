@@ -172,7 +172,13 @@ function NavbarProject({ fetchData }) {
                         <button onClick={handleToggle} className="text-white text-xl z-10">
                             {isMenuOpen ? '✕' : '☰'}
                         </button>
-                        <div className="text-white text-lg font-bold">HR-CS</div>
+                        <div className="text-white text-lg font-bold">
+                            HR-CS {role === 'superadmin' && (
+                                <span className="text-yellow-400 text-sm font-light">
+                                    (super admin)
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <div className='flex items-center gap-4'>
                         {role === 'superadmin' && (

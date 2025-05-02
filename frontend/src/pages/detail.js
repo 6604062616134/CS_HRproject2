@@ -17,6 +17,7 @@ function Detail({ type }) {
     const [currentAssignation, setCurrentAssignation] = useState(null);
     const [useTodayAsEndDate, setUseTodayAsEndDate] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [role, setRole] = useState(''); // State for user role
     const [editData, setEditData] = useState({
         a_number: '',
         docName: '',
@@ -25,6 +26,21 @@ function Detail({ type }) {
         eventDateStart: '',
         eventDateEnd: '',
     });
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/user/getUser', {
+                    withCredentials: true,
+                });
+                setRole(response.data.role); // ตั้งค่า role จาก API
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+            }
+        };
+
+        fetchUserRole();
+    }, []);
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -307,13 +323,16 @@ function Detail({ type }) {
                                                     )}
                                                 </td>
                                                 <td className="border border-gray-300 px-2 py-1 text-xs print:hidden">
-                                                    <button
-                                                        className="px-2 py-1 bg-[#000066] text-white rounded-3xl hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300 text-xs"
-                                                        onClick={() => handleEdit(assignation)}
-                                                    >
-                                                        แก้ไข
-                                                    </button>
+                                                    {role === 'superadmin' && (
+                                                        <button
+                                                            className="px-2 py-1 bg-[#000066] text-white rounded-3xl hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300 text-xs"
+                                                            onClick={() => handleEdit(assignation)}
+                                                        >
+                                                            แก้ไข
+                                                        </button>
+                                                    )}
                                                 </td>
+
                                             </tr>
                                         );
                                     })
