@@ -1,0 +1,285 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'thsarabun', sans-serif !important; /* ใช้ฟอนต์ TH Sarabun */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+body {
+  background-color: #fafafa00;
+}
+
+.btn-custom {
+  background-color: transparent;
+  /* พื้นหลังโปร่งใส */
+  border: 1px solid black;
+  /* ขอบสีดำ */
+  color: black;
+  /* สีตัวอักษร */
+  padding: 8px 15px;
+  /* ระยะห่างภายในปุ่ม */
+  text-align: center;
+  /* จัดข้อความให้อยู่ตรงกลาง */
+  text-decoration: none;
+  /* ไม่มีการขีดเส้นใต้ */
+  display: inline-block;
+  /* แสดงเป็นบล็อกแบบอินไลน์ */
+  font-size: 16px;
+  /* ขนาดตัวอักษร */
+  margin: 4px 2px;
+  /* ระยะห่างภายนอกปุ่ม */
+  cursor: pointer;
+  /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
+  border-radius: 24px;
+  /* ขอบโค้งมน */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+  /* เพิ่มการเปลี่ยนสีพื้นหลังเมื่อ hover */
+}
+
+.btn-custom:hover {
+  background-color: rgb(0, 0, 0);
+  /* สีพื้นหลังเมื่อ hover */
+  color: rgb(255, 255, 255);
+}
+
+.btn-search {
+  background-color: black;
+  border: 1px solid black;
+  /* ขอบสีดำ */
+  color: white;
+  /* สีตัวอักษร */
+  padding: 8px 15px;
+  /* ระยะห่างภายในปุ่ม */
+  text-align: center;
+  /* จัดข้อความให้อยู่ตรงกลาง */
+  text-decoration: none;
+  /* ไม่มีการขีดเส้นใต้ */
+  display: inline-block;
+  /* แสดงเป็นบล็อกแบบอินไลน์ */
+  font-size: 16px;
+  /* ขนาดตัวอักษร */
+  margin: 4px 2px;
+  /* ระยะห่างภายนอกปุ่ม */
+  cursor: pointer;
+  /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
+  border-radius: 24px;
+  /* ขอบโค้งมน */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+  /* เพิ่มการเปลี่ยนสีพื้นหลังเมื่อ hover */
+}
+
+.btn-search:hover {
+  background-color: transparent;
+  /* สีพื้นหลังเมื่อ hover */
+  color: rgb(0, 0, 0);
+}
+
+/* กำหนดสไตล์ Scrollbar */
+.scrollbar-custom {
+  scrollbar-width: thin;
+  /* สำหรับ Firefox */
+  scrollbar-color: #ffffff #000066;
+  /* สี Scrollbar และพื้นหลัง */
+}
+
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px;
+  /* ความกว้างของ Scrollbar */
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #000066;
+  /* สีพื้นหลังของ Scrollbar */
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  /* สีของ Scrollbar */
+  border-radius: 10px;
+  /* มุมโค้งมน */
+  border: 2px solid #000066;
+  /* ขอบรอบ Scrollbar */
+}
+
+@media print {
+  body {
+    font-family: 'TH Sarabun New', sans-serif !important; /* ใช้ฟอนต์ TH Sarabun */
+    font-size: 14px;
+    /* เพิ่มขนาดฟอนต์ */
+    line-height: 1.5;
+    /* เพิ่มระยะห่างระหว่างบรรทัด */
+    color: black;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  th,
+  td {
+    font-size: 12px !important;
+    /* เพิ่มขนาดฟอนต์ในตาราง */
+    padding: 2px !important;
+    /* เพิ่มระยะห่างในเซลล์ */
+    text-align: center;
+    border: 0.5px solid black !important;
+    word-wrap: break-word;
+  }
+
+  th.rotate {
+    transform: rotate(180deg); /* หมุนข้อความ 90 องศา */
+    writing-mode: vertical-lr; /* ทำให้ข้อความเรียงจากบนลงล่าง */
+    text-align: left; /* จัดข้อความให้อยู่ด้านซ้าย */
+    vertical-align: middle; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    height: 120px; /* กำหนดความสูงของเซลล์ */
+    white-space: nowrap; /* ป้องกันข้อความตัดบรรทัด */
+  }
+
+  h2 {
+    font-size: 10px;
+    /* เพิ่มขนาดฟอนต์ของหัวข้อ */
+    margin-bottom: 8px;
+    text-align: start;
+  }
+
+  table {
+    margin-bottom: 20px;
+    /* เพิ่มระยะห่างด้านล่างของตาราง */
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .col-index {
+    width: 6% !important; /* ความกว้างสำหรับลำดับ */
+    visibility: visible;
+  }
+
+  .col-index::after {
+    content: ""; /* ซ่อนข้อความในคอลัมน์ */
+  }
+
+  .col-index::before {
+    content: ""; /* ซ่อนข้อความในคอลัมน์หัวข้อ */
+  }
+
+  .col-id {
+    width: 14% !important; /* เพิ่มความกว้างสำหรับรหัส */
+  }
+
+  .col-name {
+    width: 26% !important; /* ความกว้างสำหรับชื่อ-นามสกุล */
+    text-align: start;
+  }
+
+  .col-nameHeader {
+    width: 26% !important;
+    text-align: center;
+  }
+
+  .col-thesis {
+    width: 30% !important; /* เพิ่มความกว้างสำหรับหัวข้อปริญญานิพนธ์ */
+    text-align: start;
+  }
+
+  .col-chairman,
+  .col-director,
+  .col-main-mentor,
+  .col-co-mentor {
+    width: 6%; /* เพิ่มความกว้างสำหรับประธานกรรมการและที่ปรึกษา */
+  }
+
+  .col-year,
+  .col-room {
+    width: 6% !important; /* ความกว้างสำหรับปีการศึกษา, ห้องสอบ, เกรด, และหมายเหตุ */
+  }
+
+  .col-note {
+    width: 6%
+  }
+
+  .col-grade{
+    width: 4% !important;
+  }
+
+  .col-date {
+    width: 10% !important; /* กำหนดความกว้างสำหรับคอลัมน์วันที่ */
+  }
+
+  .activityTable {
+    margin-top: 0 !important; /* ลบระยะห่างด้านบน */
+    padding-top: 0 !important; /* ลบระยะห่างด้านในด้านบน */
+    width: 100% !important;
+  }
+
+  .activityTableBorder {
+    border: 0.5px solid black !important;
+  }
+}
+
+@page {
+  /* size: A4 landscape;
+  /* เปลี่ยนเป็นแนวตั้ง (portrait) */
+  /* margin: 1.5cm; */
+  /* เพิ่มขอบกระดาษ */ 
+}
+
+@media screen {
+  .col-chairman,
+  .col-director,
+  .col-main-mentor,
+  .col-co-mentor,
+  .col-grade,
+  .col-year,
+  .col-room,
+  .col-note {
+    width: 3%;
+  }
+
+  .col-id {
+    width: 6%;
+  }
+
+  .col-date {
+    width: 3%;
+  }
+
+  .col-index {
+    width: 2%;
+  }
+
+}
+
+tbody tr:hover {
+  background-color: #fff9a6; /* สีพื้นหลังเมื่อ hover */
+  cursor: default; /* เปลี่ยน cursor เป็นค่า default */
+}
+
+.input-custom {
+  border: 1px solid black; /* ขอบสีดำ */
+  background-color: transparent; /* พื้นหลังโปร่งใส */
+  color: black; /* สีตัวอักษร */
+  padding: 8px 12px; /* ระยะห่างภายใน */
+  border-radius: 15px; /* ขอบโค้งมน */
+  font-size: 14px; /* ขนาดตัวอักษร */
+  outline: none; /* ลบเส้นขอบเมื่อโฟกัส */
+  transition: border-color 0.3s, box-shadow 0.3s; /* เพิ่มเอฟเฟกต์เมื่อโฟกัส */
+  width: 100%;
+}
+
+.input-custom:focus {
+  border-color: #000066; /* เปลี่ยนสีขอบเมื่อโฟกัส */
+  box-shadow: 0 0 5px rgba(0, 0, 102, 0.5); /* เพิ่มเงาเมื่อโฟกัส */
+}
