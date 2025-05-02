@@ -172,7 +172,7 @@ function StaffProject() {
                                 <th className="px-4 py-2 border text-xs w-10">ลำดับ</th>
                                 <th className="px-4 py-2 border text-xs w-24">รหัสนักศึกษา</th>
                                 <th className="px-4 py-2 border text-xs">ชื่อนักศึกษา</th>
-                                <th className="px-4 py-2 border text-xs">ชื่อโปรเจค</th>
+                                <th className="px-4 py-2 border text-xs">ปริญญานิพนธ์เรื่อง</th>
                                 <th className="px-4 py-2 border text-xs w-20">ปีการศึกษา</th>
                                 <th className="px-4 py-2 border text-xs w-20">อาจารย์ที่ปรึกษา</th>
                                 <th className="px-4 py-2 border text-xs w-20">เจ้าหน้าที่</th>
@@ -259,7 +259,7 @@ function StaffProject() {
                             <div className="flex flex-wrap gap-4">
                                 {/* ชื่อโปรเจค (ไทย) */}
                                 <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อโปรเจค (ไทย)</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (ไทย)</label>
                                     <input
                                         type="text"
                                         name="thesisNameTH"
@@ -271,7 +271,7 @@ function StaffProject() {
 
                                 {/* ชื่อโปรเจค (อังกฤษ) */}
                                 <div className="flex-1 min-w-[200px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อโปรเจค (อังกฤษ)</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (อังกฤษ)</label>
                                     <input
                                         type="text"
                                         name="thesisNameEN"

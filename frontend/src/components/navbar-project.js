@@ -212,29 +212,7 @@ function NavbarProject({ fetchData }) {
                                         name="datetime"
                                         value={formData.datetime}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                                <div className="flex-[2] min-w-[300px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (ไทย)</label>
-                                    <input
-                                        type="text"
-                                        name="thesisnameTH"
-                                        value={formData.thesisnameTH}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="ชื่อปริญญานิพนธ์ (ไทย)"
-                                    />
-                                </div>
-                                <div className="flex-[2] min-w-[300px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (อังกฤษ)</label>
-                                    <input
-                                        type="text"
-                                        name="thesisnameEN"
-                                        value={formData.thesisnameEN}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="ชื่อปริญญานิพนธ์ (อังกฤษ)"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                     />
                                 </div>
                                 <div className="flex-1 min-w-[150px]">
@@ -244,7 +222,7 @@ function NavbarProject({ fetchData }) {
                                         name="studentCode1"
                                         value={formData.studentCode1}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="รหัสนักศึกษา 1"
                                     />
                                 </div>
@@ -255,8 +233,30 @@ function NavbarProject({ fetchData }) {
                                         name="studentCode2"
                                         value={formData.studentCode2}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="รหัสนักศึกษา 2"
+                                    />
+                                </div>
+                                <div className="flex-[2] min-w-[300px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (ไทย)</label>
+                                    <input
+                                        type="text"
+                                        name="thesisnameTH"
+                                        value={formData.thesisnameTH}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        placeholder="ชื่อปริญญานิพนธ์ (ไทย)"
+                                    />
+                                </div>
+                                <div className="flex-[2] min-w-[300px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (อังกฤษ)</label>
+                                    <input
+                                        type="text"
+                                        name="thesisnameEN"
+                                        value={formData.thesisnameEN}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        placeholder="ชื่อปริญญานิพนธ์ (อังกฤษ)"
                                     />
                                 </div>
                                 <div className="flex-[2] min-w-[300px]">
@@ -266,7 +266,7 @@ function NavbarProject({ fetchData }) {
                                         name="FLname1"
                                         value={formData.FLname1}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อ-นามสกุล (นักศึกษา 1)"
                                     />
                                 </div>
@@ -277,7 +277,7 @@ function NavbarProject({ fetchData }) {
                                         name="FLname2"
                                         value={formData.FLname2}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อ-นามสกุล (นักศึกษา 2)"
                                     />
                                 </div>
@@ -288,7 +288,7 @@ function NavbarProject({ fetchData }) {
                                         name="chairman"
                                         value={formData.chairman}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ประธานกรรมการ"
                                     />
                                 </div>
@@ -299,7 +299,7 @@ function NavbarProject({ fetchData }) {
                                         name="director"
                                         value={formData.director}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="กรรมการ"
                                     />
                                 </div>
@@ -310,7 +310,7 @@ function NavbarProject({ fetchData }) {
                                         name="MainMentor"
                                         value={formData.MainMentor}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="อาจารย์ที่ปรึกษาหลัก"
                                     />
                                 </div>
@@ -321,7 +321,7 @@ function NavbarProject({ fetchData }) {
                                         name="CoMentor"
                                         value={formData.CoMentor}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="อาจารย์ที่ปรึกษาร่วม"
                                     />
                                 </div>
@@ -332,7 +332,7 @@ function NavbarProject({ fetchData }) {
                                         name="year"
                                         value={formData.year}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ปีการศึกษา"
                                     />
                                 </div>
@@ -343,7 +343,7 @@ function NavbarProject({ fetchData }) {
                                         name="room"
                                         value={formData.room}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ห้องสอบ"
                                     />
                                 </div>
@@ -354,7 +354,7 @@ function NavbarProject({ fetchData }) {
                                         name="grade"
                                         value={formData.grade}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="เกรดที่ได้"
                                     />
                                 </div>
@@ -364,7 +364,7 @@ function NavbarProject({ fetchData }) {
                                         name="note"
                                         value={formData.note}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="หมายเหตุ"
                                     />
                                 </div>

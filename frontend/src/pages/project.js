@@ -292,11 +292,34 @@ function Project() {
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 1</label>
+                                            <input
+                                                type="text"
+                                                name="studentCode1"
+                                                value={editData?.studentCode1 || ''}
+                                                placeholder='รหัสนักศึกษา 1'
+                                                onChange={(e) => setEditData({ ...editData, studentCode1: e.target.value })}
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 2</label>
+                                            <input
+                                                type="text"
+                                                name="studentCode2"
+                                                placeholder='รหัสนักศึกษา 2'
+                                                value={editData?.studentCode2 || ''}
+                                                onChange={(e) => setEditData({ ...editData, studentCode2: e.target.value })}
+                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            />
+                                        </div>
                                         <div className="flex-[2] min-w-[300px]">
                                             <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (ไทย)</label>
                                             <input
                                                 type="text"
                                                 name="thesisnameTH"
+                                                placeholder='ปริญญานิพนธ์เรื่อง (ไทย)'
                                                 value={editData?.thesisnameTH || ''}
                                                 onChange={(e) => setEditData({ ...editData, thesisnameTH: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
@@ -307,28 +330,9 @@ function Project() {
                                             <input
                                                 type="text"
                                                 name="thesisnameEN"
+                                                placeholder='ปริญญานิพนธ์เรื่อง (อังกฤษ)'
                                                 value={editData?.thesisnameEN || ''}
                                                 onChange={(e) => setEditData({ ...editData, thesisnameEN: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 1</label>
-                                            <input
-                                                type="text"
-                                                name="studentCode1"
-                                                value={editData?.studentCode1 || ''}
-                                                onChange={(e) => setEditData({ ...editData, studentCode1: e.target.value })}
-                                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 2</label>
-                                            <input
-                                                type="text"
-                                                name="studentCode2"
-                                                value={editData?.studentCode2 || ''}
-                                                onChange={(e) => setEditData({ ...editData, studentCode2: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
                                         </div>
@@ -338,6 +342,7 @@ function Project() {
                                                 type="text"
                                                 name="FLname1"
                                                 value={editData?.FLname1 || ''}
+                                                placeholder='ชื่อ-นามสกุล (นักศึกษา 1)'
                                                 onChange={(e) => setEditData({ ...editData, FLname1: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -348,6 +353,7 @@ function Project() {
                                                 type="text"
                                                 name="FLname2"
                                                 value={editData?.FLname2 || ''}
+                                                placeholder='ชื่อ-นามสกุล (นักศึกษา 2)'
                                                 onChange={(e) => setEditData({ ...editData, FLname2: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -358,6 +364,7 @@ function Project() {
                                                 type="text"
                                                 name="chairman"
                                                 value={editData?.chairman || ''}
+                                                placeholder='ประธานกรรมการ'
                                                 onChange={(e) => setEditData({ ...editData, chairman: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -368,6 +375,7 @@ function Project() {
                                                 type="text"
                                                 name="director"
                                                 value={editData?.director || ''}
+                                                placeholder='กรรมการ'
                                                 onChange={(e) => setEditData({ ...editData, director: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -378,6 +386,7 @@ function Project() {
                                                 type="text"
                                                 name="MainMentor"
                                                 value={editData?.MainMentor || ''}
+                                                placeholder='อาจารย์ที่ปรึกษาหลัก'
                                                 onChange={(e) => setEditData({ ...editData, MainMentor: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -388,6 +397,7 @@ function Project() {
                                                 type="text"
                                                 name="CoMentor"
                                                 value={editData?.CoMentor || ''}
+                                                placeholder='อาจารย์ที่ปรึกษาร่วม'
                                                 onChange={(e) => setEditData({ ...editData, CoMentor: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -398,6 +408,7 @@ function Project() {
                                                 type="text"
                                                 name="year"
                                                 value={editData?.year || ''}
+                                                placeholder='ปีการศึกษา'
                                                 onChange={(e) => setEditData({ ...editData, year: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -408,6 +419,7 @@ function Project() {
                                                 type="text"
                                                 name="room"
                                                 value={editData?.room || ''}
+                                                placeholder='ห้องสอบ'
                                                 onChange={(e) => setEditData({ ...editData, room: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -418,6 +430,7 @@ function Project() {
                                                 type="text"
                                                 name="grade"
                                                 value={editData?.grade || ''}
+                                                placeholder='เกรดที่ได้'
                                                 onChange={(e) => setEditData({ ...editData, grade: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />
@@ -427,6 +440,7 @@ function Project() {
                                             <textarea
                                                 name="note"
                                                 value={editData?.note || ''}
+                                                placeholder='หมายเหตุ'
                                                 onChange={(e) => setEditData({ ...editData, note: e.target.value })}
                                                 className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             />

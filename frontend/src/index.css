@@ -20,6 +20,11 @@ body {
   background-color: #fafafa00;
 }
 
+::selection {
+  background-color: #000066; /* สีพื้นหลังเมื่อเลือกข้อความ */
+  color: #ffffff; /* สีข้อความเมื่อเลือก */
+}
+
 .btn-custom {
   background-color: transparent;
   /* พื้นหลังโปร่งใส */

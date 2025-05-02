@@ -190,7 +190,7 @@ function Assign() {
                             <button
                                 type="button"
                                 onClick={handleReset}
-                                className="px-2 py-1 bg-red-500 text-white rounded-3xl hover:bg-gray-600 transition-all duration-300 ease-in-out shadow-md text-xs"
+                                className="underline text-red-600 hover:text-black transition-all duration-300 ease-in-out text-xs"
                             >
                                 รีเซ็ต
                             </button>
@@ -335,7 +335,7 @@ function Assign() {
                                 <button
                                     type="button"
                                     onClick={handleResetSelections}
-                                    className="px-2 py-1 bg-red-500 text-white rounded-3xl hover:bg-gray-600 transition-all shadow-lg text-xs"
+                                    className="underline text-red-600 hover:text-black transition-all duration-300 ease-in-out text-xs"
                                 >
                                     รีเซ็ตรายการที่เลือก
                                 </button>

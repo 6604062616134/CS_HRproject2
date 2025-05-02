@@ -219,7 +219,7 @@ function NavbarStaffProject() {
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-3xl shadow-lg w-[90%] max-w-[800px] overflow-auto">
-                        <h2 className="text-lg font-bold mb-4 no-print">เพิ่มข้อมูลนักศึกษา</h2>
+                        <h2 className="text-lg font-bold mb-4 no-print">เพิ่มข้อมูลโปรเจค</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="flex flex-wrap gap-4">
                                 {/* ปริญญานิพนธ์เรื่อง (ไทย) */}
@@ -230,7 +230,7 @@ function NavbarStaffProject() {
                                         name="thesisNameTH"
                                         value={formData.thesisNameTH}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อปริญญานิพนธ์ (ไทย)"
                                     />
                                 </div>
@@ -243,7 +243,7 @@ function NavbarStaffProject() {
                                         name="thesisNameEN"
                                         value={formData.thesisNameEN}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อปริญญานิพนธ์ (อังกฤษ)"
                                     />
                                 </div>
@@ -256,7 +256,7 @@ function NavbarStaffProject() {
                                         name="studentCode1"
                                         value={formData.studentCode1}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="รหัสนักศึกษา 1"
                                     />
                                 </div>
@@ -269,11 +269,24 @@ function NavbarStaffProject() {
                                         name="studentCode2"
                                         value={formData.studentCode2}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="รหัสนักศึกษา 2"
                                     />
                                 </div>
 
+                                {/* ปีการศึกษา */}
+                                <div className="flex-1 min-w-[150px]">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปีการศึกษา</label>
+                                    <input
+                                        type="text"
+                                        name="year"
+                                        value={formData.year}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        placeholder="ปีการศึกษา"
+                                    />
+                                </div>
+                                
                                 {/* ชื่อ-นามสกุล (นักศึกษา) 1 */}
                                 <div className="flex-[2] min-w-[300px]">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล (นักศึกษา) 1</label>
@@ -282,7 +295,7 @@ function NavbarStaffProject() {
                                         name="FLname1"
                                         value={formData.FLname1}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อ-นามสกุล (นักศึกษา)1"
                                     />
                                 </div>
@@ -295,23 +308,11 @@ function NavbarStaffProject() {
                                         name="FLname2"
                                         value={formData.FLname2}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="ชื่อ-นามสกุล (นักศึกษา)2"
                                     />
                                 </div>
 
-                                {/* ปีการศึกษา */}
-                                <div className="flex-1 min-w-[150px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">ปีการศึกษา</label>
-                                    <input
-                                        type="text"
-                                        name="year"
-                                        value={formData.year}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        placeholder="ปีการศึกษา"
-                                    />
-                                </div>
 
                                 {/* สถานะการตรวจสอบ และ อาจารย์ที่ปรึกษา */}
                                 <div className="flex w-full gap-4">
@@ -351,7 +352,7 @@ function NavbarStaffProject() {
                                             name="MainMentor"
                                             value={formData.MainMentor}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             placeholder="รหัสอาจารย์ที่ปรึกษา"
                                         />
                                     </div>
@@ -364,7 +365,7 @@ function NavbarStaffProject() {
                                             name="s_name"
                                             value={formData.s_name}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                             placeholder="ชื่อเจ้าหน้าที่"
                                         />
                                     </div>
@@ -376,7 +377,7 @@ function NavbarStaffProject() {
                                         name="note"
                                         value={formData.note}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         placeholder="หมายเหตุ"
                                         rows="3"
                                     />
@@ -392,7 +393,7 @@ function NavbarStaffProject() {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-blue-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 >
                                     บันทึก
                                 </button>
