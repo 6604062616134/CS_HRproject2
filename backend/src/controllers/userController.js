@@ -1,7 +1,6 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { get } = require('../routes/userRoute');
 
 const UserController = {
     async login(req, res) {

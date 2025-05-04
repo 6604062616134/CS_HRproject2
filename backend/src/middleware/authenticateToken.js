@@ -5,7 +5,7 @@ const authenticateToken = (req, res, next) => {
     console.log('Token from cookies:', token);
 
     if (!token) {
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+        return res.status(401).json({ error: 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่' });
     }
 
     try {
@@ -14,8 +14,13 @@ const authenticateToken = (req, res, next) => {
         next();
     } catch (err) {
         console.error('Token verification failed:', err);
-        return res.status(403).json({ error: 'Invalid token.' });
+
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่' });
+        }
+
+        return res.status(403).json({ error: 'โทเค็นไม่ถูกต้อง กรุณาเข้าสู่ระบบใหม่' });
     }
 };
 
-module.exports = { authenticateToken };
+module.exports = authenticateToken;

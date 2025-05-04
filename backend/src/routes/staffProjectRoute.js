@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const StaffProjectController = require('../controllers/staffProjectController');
-const { authenticateToken } = require('../middleware/authenticateToken');
+const authenticateToken  = require('../middleware/authenticateToken');
 
 router.get('/getall', authenticateToken,StaffProjectController.getAllStaffProjects);
 router.get('/getByStaffId', authenticateToken,StaffProjectController.getStaffProjectByStaffId);

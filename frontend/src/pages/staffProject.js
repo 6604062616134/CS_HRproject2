@@ -15,7 +15,6 @@ function StaffProject() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // เรียก API /getall จาก staffProjectController
                 const response = await axios.get('http://localhost:8000/staffproject/getall',
                     {
                         withCredentials: true, // ย้ายมาไว้ที่นี่
@@ -23,7 +22,12 @@ function StaffProject() {
                 );
                 setData(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                if (error.response && error.response.status === 401) {
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+                } else {
+                    console.error('Error fetching data:', error);
+                }
             }
         };
 
@@ -51,7 +55,12 @@ function StaffProject() {
                 });
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
-                console.error('Error fetching user role:', error);
+                if (error.response && error.response.status === 401) {
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+                } else {
+                    console.error('Error fetching user role:', error);
+                }
             }
         };
 
@@ -82,8 +91,13 @@ function StaffProject() {
                 window.location.reload(); // รีเฟรชหน้าเว็บเพื่อโหลดข้อมูลใหม่
             }
         } catch (error) {
-            console.error('Error updating data:', error);
-            alert('เกิดข้อผิดพลาดในการแก้ไขข้อมูล');
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error updating data:', error);
+                alert('เกิดข้อผิดพลาดในการแก้ไขข้อมูล');
+            }
         }
     };
 

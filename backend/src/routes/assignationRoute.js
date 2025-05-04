@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const AssignationController = require('../controllers/assignationController');
-const { authenticateToken } = require('../middleware/authenticateToken');
+const authenticateToken = require('../middleware/authenticateToken');
 
 // Protected routes (ต้องล็อกอิน)
 router.get('/:id', authenticateToken, AssignationController.getAssignationById);

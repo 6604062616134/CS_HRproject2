@@ -29,7 +29,13 @@ function Assign() {
                 });
                 setTeachers(response.data); // อัปเดต state ด้วยข้อมูลอาจารย์
             } catch (error) {
-                console.error('Error fetching teachers:', error);
+                if (error.response && error.response.status === 401) {
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+                } else {
+                    console.error('Error deleting student data:', error);
+                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                }
             }
         };
 
@@ -46,7 +52,13 @@ function Assign() {
                 ); // URL ของ API
                 setStaff(response.data); // อัปเดต state ด้วยข้อมูลเจ้าหน้าที่
             } catch (error) {
-                console.error('Error fetching staff:', error);
+                if (error.response && error.response.status === 401) {
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+                } else {
+                    console.error('Error deleting student data:', error);
+                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+                }
             }
         };
 
@@ -113,7 +125,13 @@ function Assign() {
                 });
             console.log('Assignation created:', response.data);
         } catch (error) {
-            console.error('Error fetching teachers:', error);
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error deleting student data:', error);
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            }
         }
     };
 

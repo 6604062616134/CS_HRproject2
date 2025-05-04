@@ -22,7 +22,12 @@ function Project() {
             );
             setStudents(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error fetching data:', error);
+            }
         }
     };
 
@@ -38,7 +43,12 @@ function Project() {
                 });
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
-                console.error('Error fetching user role:', error);
+                if (error.response && error.response.status === 401) {
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+                } else {
+                    console.error('Error fetching user role:', error);
+                }
             }
         };
 
@@ -104,8 +114,13 @@ function Project() {
             fetchData(); // โหลดข้อมูลใหม่
             handleEditModalClose(); // ปิด Modal
         } catch (error) {
-            console.error('Error deleting student data:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error deleting student data:', error);
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            }
         }
     };
 

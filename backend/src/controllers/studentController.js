@@ -1,4 +1,3 @@
-const { create } = require('mathjs');
 const db = require('../db');
 
 const StudentController = {

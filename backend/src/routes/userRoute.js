@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
-const { authenticateToken } = require('../middleware/authenticateToken');
+const authenticateToken = require('../middleware/authenticateToken');
 
 // Public route (ไม่ต้องล็อกอิน)
 router.post('/login', UserController.login);

@@ -65,8 +65,13 @@ function Admin() {
             });
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
-            console.error('Error saving user:', error);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error deleting student data:', error);
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            }
         }
     };
 
@@ -92,8 +97,13 @@ function Admin() {
             });
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
-            console.error('Error deleting user:', error);
-            alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            if (error.response && error.response.status === 401) {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
+            } else {
+                console.error('Error deleting student data:', error);
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
+            }
         }
     };
 
@@ -158,6 +168,14 @@ function Admin() {
                             {isEditMode ? 'แก้ไขข้อมูลผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
                         </h3>
                         <div className="mb-4">
+                            {isEditMode && (
+                                <button
+                                    className="px-4 py-2 bg-red-600 text-right text-white rounded-3xl hover:bg-red-700 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    onClick={handleDelete}
+                                >
+                                    ลบผู้ใช้
+                                </button>
+                            )}
                             <label className="block text-sm font-medium text-gray-700">Username</label>
                             <input
                                 type="text"
@@ -167,18 +185,6 @@ function Admin() {
                                 className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
-                        {!isEditMode && (
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Password</label>
-                                <input
-                                    type="password"
-                                    value={editUser.password}
-                                    placeholder="password"
-                                    onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
-                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                />
-                            </div>
-                        )}
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">Role</label>
                             <input

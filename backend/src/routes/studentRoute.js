@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const StudentController = require('../controllers/studentController');
-const { authenticateToken } = require('../middleware/authenticateToken');
+const authenticateToken = require('../middleware/authenticateToken');
 
 router.get('/all', authenticateToken,StudentController.getAllstudent);
 router.post('/create', authenticateToken,StudentController.createstudentthesisinfo);
