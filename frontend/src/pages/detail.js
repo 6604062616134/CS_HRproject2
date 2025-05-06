@@ -173,7 +173,6 @@ function Detail({ type }) {
                 setIsEditModalOpen(false); // ปิด Modal หลังจากลบข้อมูลสำเร็จ
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         }
     };
@@ -207,7 +206,6 @@ function Detail({ type }) {
             );
         } catch (error) {
             console.error('Error fetching users:', error);
-            alert('เกิดข้อผิดพลาด');
         }
     };
 

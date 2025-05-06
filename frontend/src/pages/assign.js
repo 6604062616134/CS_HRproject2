@@ -46,7 +46,6 @@ function Assign() {
                 setTeachers(response.data); // อัปเดต state ด้วยข้อมูลอาจารย์
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -64,7 +63,6 @@ function Assign() {
                 setStaff(response.data); // อัปเดต state ด้วยข้อมูลเจ้าหน้าที่
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -132,7 +130,6 @@ function Assign() {
             console.log('Assignation created:', response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
-            alert('เกิดข้อผิดพลาด');
         }
     };
 

@@ -34,7 +34,6 @@ function Admin() {
                 setUsers(Array.isArray(response.data) ? response.data : []); // ตรวจสอบว่าเป็นอาร์เรย์
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาดในการดึงข้อมูล'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -84,7 +83,6 @@ function Admin() {
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching users:', error);
-            alert('เกิดข้อผิดพลาด');
         }
     };
 
@@ -111,7 +109,6 @@ function Admin() {
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching users:', error);
-            alert('เกิดข้อผิดพลาด');
         }
     };
 

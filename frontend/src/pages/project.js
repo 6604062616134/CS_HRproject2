@@ -61,7 +61,6 @@ function Project() {
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -128,7 +127,6 @@ function Project() {
             handleEditModalClose(); // ปิด Modal
         } catch (error) {
             console.error('Error fetching users:', error);
-            alert('เกิดข้อผิดพลาด');
         }
     };
 
