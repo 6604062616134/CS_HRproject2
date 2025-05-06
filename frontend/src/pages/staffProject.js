@@ -12,6 +12,23 @@ function StaffProject() {
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์
     const [role, setRole] = useState(''); // เก็บข้อมูล role ของผู้ใช้
 
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -22,12 +39,8 @@ function StaffProject() {
                 );
                 setData(response.data);
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error fetching data:', error);
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -55,12 +68,8 @@ function StaffProject() {
                 });
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error fetching user role:', error);
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -91,13 +100,8 @@ function StaffProject() {
                 window.location.reload(); // รีเฟรชหน้าเว็บเพื่อโหลดข้อมูลใหม่
             }
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error updating data:', error);
-                alert('เกิดข้อผิดพลาดในการแก้ไขข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด'); // แจ้งข้อผิดพลาดทั่วไป
         }
     };
 

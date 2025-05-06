@@ -11,21 +11,24 @@ function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const handleLogin = async (event) => {
+        event.preventDefault(); // ป้องกันการรีเฟรชหน้าเว็บ
         try {
-            const response = await axios.post(
-                'http://localhost:8000/user/login',
-                { username, password },
-                { withCredentials: true } // เพิ่มการตั้งค่านี้
-            );
-            if (response.status === 200) {
-                console.log('Login success, navigating...');
-                navigate('/assign');
+            const response = await axios.post('http://localhost:8000/user/login', {
+                username,
+                password,
+            }, { withCredentials: true });
+    
+            if (response.data.role?.toLowerCase() === 'superadmin') {
+                console.log('Superadmin login successful');
+                navigate('/assign'); // ใช้ navigate แทน window.location.href
+            } else {
+                console.log('Admin login successful');
+                navigate('/project'); // ใช้ navigate แทน window.location.href
             }
-
-        } catch (err) {
-            setError('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert(error.response?.data?.error || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
         }
     };
 

@@ -8,6 +8,23 @@ function Admin() {
     const [isModalOpen, setIsModalOpen] = useState(false); // ควบคุมการแสดงผลของ Modal
     const [editUser, setEditUser] = useState(null); // เก็บข้อมูลผู้ใช้ที่ต้องการแก้ไข
 
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -17,6 +34,7 @@ function Admin() {
                 setUsers(Array.isArray(response.data) ? response.data : []); // ตรวจสอบว่าเป็นอาร์เรย์
             } catch (error) {
                 console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาดในการดึงข้อมูล'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -65,13 +83,8 @@ function Admin() {
             });
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error deleting student data:', error);
-                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด');
         }
     };
 
@@ -97,13 +110,8 @@ function Admin() {
             });
             setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error deleting student data:', error);
-                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด');
         }
     };
 

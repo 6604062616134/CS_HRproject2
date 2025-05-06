@@ -36,7 +36,7 @@ const UserController = {
             const token = jwt.sign(
                 { admin_ID: user.admin_ID, username: user.username, role: user.role },
                 process.env.JWT_SECRET_KEY,
-                { expiresIn: '1h' }
+                { expiresIn: '3h' }
             );
 
             const datetime = new Date();
@@ -47,7 +47,7 @@ const UserController = {
 
             // ส่ง Token กลับไปใน Cookie
             res.cookie('auth_token', token, { httpOnly: true, secure: false, sameSite: 'lax' });
-            return res.status(200).json({ message: 'Login successful' });
+            return res.status(200).json({ message: 'Login successful', role: user.role  });
 
         } catch (error) {
             console.error('Error during login:', error);

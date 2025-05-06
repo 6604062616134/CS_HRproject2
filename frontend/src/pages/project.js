@@ -12,6 +12,23 @@ function Project() {
     const [role, setRole] = useState('');
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์
 
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+
     const fetchData = async () => {
         try {
             const response = await axios.get('http://localhost:8000/student/all',
@@ -43,12 +60,8 @@ function Project() {
                 });
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error fetching user role:', error);
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด'); // แจ้งข้อผิดพลาดทั่วไป
             }
         };
 
@@ -114,13 +127,8 @@ function Project() {
             fetchData(); // โหลดข้อมูลใหม่
             handleEditModalClose(); // ปิด Modal
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error deleting student data:', error);
-                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด');
         }
     };
 

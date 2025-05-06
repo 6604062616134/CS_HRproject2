@@ -26,6 +26,22 @@ function Detail({ type }) {
         eventDateStart: '',
         eventDateEnd: '',
     });
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
 
     useEffect(() => {
         const fetchUserRole = async () => {
@@ -35,13 +51,8 @@ function Detail({ type }) {
                 });
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -59,13 +70,8 @@ function Detail({ type }) {
                 });
                 setPersonDetail(response.data);
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -81,13 +87,8 @@ function Detail({ type }) {
                 });
                 setAssignations(response.data);
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -171,13 +172,8 @@ function Detail({ type }) {
                 setAssignations((prev) => prev.filter((assignation) => assignation.a_number !== a_number));
                 setIsEditModalOpen(false); // ปิด Modal หลังจากลบข้อมูลสำเร็จ
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         }
     };
@@ -210,13 +206,8 @@ function Detail({ type }) {
                 )
             );
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error deleting student data:', error);
-                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด');
         }
     };
 

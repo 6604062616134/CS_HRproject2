@@ -20,6 +20,22 @@ function Assign() {
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์อาจารย์
     const dropdownStaffRef = useRef(null); // สำหรับดรอปดาวน์เจ้าหน้าที่
     const navigate = useNavigate();
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -29,13 +45,8 @@ function Assign() {
                 });
                 setTeachers(response.data); // อัปเดต state ด้วยข้อมูลอาจารย์
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -52,13 +63,8 @@ function Assign() {
                 ); // URL ของ API
                 setStaff(response.data); // อัปเดต state ด้วยข้อมูลเจ้าหน้าที่
             } catch (error) {
-                if (error.response && error.response.status === 401) {
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-                } else {
-                    console.error('Error deleting student data:', error);
-                    alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-                }
+                console.error('Error fetching users:', error);
+                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -125,13 +131,8 @@ function Assign() {
                 });
             console.log('Assignation created:', response.data);
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าล็อกอิน
-            } else {
-                console.error('Error deleting student data:', error);
-                alert('เกิดข้อผิดพลาดในการลบข้อมูล');
-            }
+            console.error('Error fetching users:', error);
+            alert('เกิดข้อผิดพลาด');
         }
     };
 
