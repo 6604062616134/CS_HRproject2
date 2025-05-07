@@ -169,18 +169,20 @@ function Admin() {
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-3xl shadow-lg w-96">
-                        <h3 className="text-lg font-semibold mb-4">
-                            {isEditMode ? 'แก้ไขข้อมูลผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
-                        </h3>
-                        <div className="mb-4">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">
+                                {isEditMode ? 'แก้ไขข้อมูลผู้ใช้' : 'เพิ่มผู้ใช้ใหม่'}
+                            </h3>
                             {isEditMode && (
                                 <button
-                                    className="px-4 py-2 bg-red-600 text-right text-white rounded-3xl hover:bg-red-700 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    className="text-red-600 underline text-sm hover:text-red-800 transition-all duration-200"
                                     onClick={handleDelete}
                                 >
                                     ลบผู้ใช้
                                 </button>
                             )}
+                        </div>
+                        <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">Username</label>
                             <input
                                 type="text"
