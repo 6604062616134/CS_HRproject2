@@ -286,7 +286,7 @@ function NavbarStaffProject() {
                                         placeholder="ปีการศึกษา"
                                     />
                                 </div>
-                                
+
                                 {/* ชื่อ-นามสกุล (นักศึกษา) 1 */}
                                 <div className="flex-[2] min-w-[300px]">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">ชื่อ-นามสกุล (นักศึกษา) 1</label>
@@ -440,13 +440,29 @@ function NavbarStaffProject() {
                     </NavLink>
                     {/* แสดงเฉพาะเมื่อ role เป็น superadmin */}
                     {role === 'superadmin' && (
-                        <NavLink
-                            to="/admin"
-                            className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
-                            onClick={handleToggle}
-                        >
-                            จัดการผู้ใช้
-                        </NavLink>
+                        <div>
+                            {/* <NavLink
+                                to="/admin"
+                                className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
+                                onClick={handleToggle}
+                                >
+                                    จัดการผู้ใช้
+                            </NavLink> */}
+                            <NavLink
+                                to="/tInfo"
+                                className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
+                                onClick={handleToggle}
+                            >
+                                ข้อมูลอาจารย์
+                            </NavLink>
+                            <NavLink
+                                to="/sInfo"
+                                className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
+                                onClick={handleToggle}
+                            >
+                                ข้อมูลเจ้าหน้าที่
+                            </NavLink>
+                        </div>
                     )}
                     <hr className="my-4 border-t border-1 border-gray-300 w-64 mx-auto" />
                     <button
@@ -466,7 +482,11 @@ function NavbarStaffProject() {
                                     key={teacher.t_ID}
                                     to={`/detail/teacher/${teacher.t_ID}`} // ส่ง type "teacher" และ id
                                     className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
-                                    onClick={handleToggle}
+                                    onClick={() => {
+                                        handleToggle(); // ปิดเมนู
+                                        navigate(`/detail/teacher/${teacher.t_ID}`);
+                                        window.location.reload(); // รีโหลดหน้าเพื่อโหลดข้อมูลใหม่
+                                    }}
                                 >
                                     {teacher.t_name}
                                 </NavLink>
@@ -490,7 +510,11 @@ function NavbarStaffProject() {
                                     key={staffMember.s_ID}
                                     to={`/detail/staff/${staffMember.s_ID}`} // ส่ง type "staff" และ id
                                     className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
-                                    onClick={handleToggle}
+                                    onClick={() => {
+                                        handleToggle(); // ปิดเมนู
+                                        navigate(`/detail/staff/${staffMember.s_ID}`);
+                                        window.location.reload(); // รีโหลดหน้า
+                                    }}
                                 >
                                     {staffMember.s_name}
                                 </NavLink>

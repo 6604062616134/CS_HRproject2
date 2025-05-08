@@ -208,7 +208,7 @@ function Assign() {
                                 onClick={handleReset}
                                 className="underline text-red-600 hover:text-black transition-all duration-300 ease-in-out text-xs"
                             >
-                                รีเซ็ต
+                                รีเซ็ตข้อมูลที่กรอก
                             </button>
                         </div>
                         <div>
@@ -281,7 +281,7 @@ function Assign() {
                     <div className='flex flex-col w-1/2 gap-4 mb-2'>
                         <div className="flex-1 p-4 rounded-3xl border relative h-[455px] overflow-visible">
                             <div className="flex items-center mb-4 gap-4">
-                                <h3 className="font-medium text-gray-800">อาจารย์ที่เลือก</h3>
+                                <h3 className="font-medium text-gray-800">บุคลากร</h3>
                                 <div className="relative" ref={dropdownRef}>
                                     <div
                                         className="px-2 py-1 border rounded-3xl bg-white cursor-pointer focus:outline-none shadow-lg z-50 text-xs hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
@@ -387,12 +387,12 @@ function Assign() {
                             </div>
                         </div>
                         <div>
-                            <label className="block mb-1 text-sm text-gray-600">แนบลิงก์google drive</label>
+                            <label className="block mb-1 text-sm text-gray-600">แนบลิงก์</label>
                             <textarea
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
                                 className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-24 resize-none" // ลดความสูงจาก h-40 เป็น h-32
-                                placeholder="ลิงก์google drive"
+                                placeholder="เช่น google drive"
                             />
                         </div>
                         <button

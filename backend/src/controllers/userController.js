@@ -1,6 +1,7 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { getAllTeachers } = require('./teacherController');
 
 const UserController = {
     async login(req, res) {
@@ -21,7 +22,7 @@ const UserController = {
             const user = rows[0];
 
             // ตรวจสอบ role
-            if (user.role !== 'admin' && user.role !== 'superadmin') {
+            if (user.role !== 'teacher' && user.role !== 'superadmin') {
                 return res.status(403).json({ error: 'Access denied. Invalid role' });
             }
 
@@ -47,7 +48,7 @@ const UserController = {
 
             // ส่ง Token กลับไปใน Cookie
             res.cookie('auth_token', token, { httpOnly: true, secure: false, sameSite: 'lax' });
-            return res.status(200).json({ message: 'Login successful', role: user.role  });
+            return res.status(200).json({ message: 'Login successful', role: user.role });
 
         } catch (error) {
             console.error('Error during login:', error);
@@ -69,19 +70,32 @@ const UserController = {
     async createUser(req, res) {
         try {
             console.log(req.body); // ตรวจสอบว่า req.body มีข้อมูลที่ถูกต้อง
-            const { username, password, role } = req.body;
+            const { username, password, role, t_ID, s_ID } = req.body;
 
-            if (!username || !password) {
-                return res.status(400).json({ error: 'Username and password are required' });
+            if (!username || !password || !role) {
+                return res.status(400).json({ error: 'Username, password, and role are required' });
             }
 
             const hashedPassword = await bcrypt.hash(password, 10);
             const created = new Date();
             const modified = new Date();
 
-            const sql_params = [username, hashedPassword, created, modified, role];
+            // ตรวจสอบ role และกำหนดค่า t_ID หรือ s_ID
+            let teacherID = null;
+            let staffID = null;
 
-            await db.query(`INSERT INTO admin (username, password, createdDate, modifiedDate,role) VALUES (?, ?, ?, ?, ?)`, sql_params);
+            if (role === 'teacher') {
+                teacherID = t_ID || null; // ใช้ t_ID หากมีค่า หรือ NULL
+            } else if (role === 'staff') {
+                staffID = s_ID || null; // ใช้ s_ID หากมีค่า หรือ NULL
+            }
+
+            const sql_params = [username, hashedPassword, created, modified, role, teacherID, staffID];
+
+            await db.query(
+                `INSERT INTO admin (username, password, createdDate, modifiedDate, role, t_ID, s_ID) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                sql_params
+            );
 
             res.status(201).json({ message: 'User created', status: 'success' });
         } catch (error) {
@@ -150,6 +164,55 @@ const UserController = {
             res.status(500).json({ error: 'Internal server error', status: 'error' });
         }
     },
+
+    async getAllTeacherAccount(req, res) {
+        try {
+            const [rows] = await db.query('SELECT * FROM admin WHERE role = ?', ['teacher']);
+            if (rows.length === 0) {
+                return res.status(404).json({ error: 'No teacher accounts found' });
+            }
+            res.status(200).json(rows); // ส่งข้อมูลผู้ใช้ทั้งหมดกลับไป
+        } catch (error) {
+            console.error('Error fetching all teacher accounts:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async changePassword(req, res) {
+        try {
+            const { t_ID } = req.params;
+            const { oldPassword, newPassword } = req.body;
+    
+            if (!oldPassword || !newPassword) {
+                return res.status(400).json({ error: 'Old password and new password are required' });
+            }
+    
+            // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+            const [rows] = await db.query('SELECT password FROM admin WHERE t_ID = ?', [t_ID]);
+            if (rows.length === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+    
+            const user = rows[0];
+    
+            // ตรวจสอบรหัสผ่านเดิม
+            const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+            if (!isPasswordValid) {
+                return res.status(401).json({ error: 'Old password is incorrect' });
+            }
+    
+            // แฮชรหัสผ่านใหม่
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+            // อัปเดตรหัสผ่านใหม่ในฐานข้อมูล
+            await db.query('UPDATE admin SET password = ? WHERE admin_ID = ?', [hashedPassword, t_ID]);
+    
+            res.status(200).json({ message: 'Password updated successfully' });
+        } catch (error) {
+            console.error('Error changing password:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 };
 
 module.exports = UserController;

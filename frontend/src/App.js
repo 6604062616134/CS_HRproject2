@@ -7,6 +7,8 @@ import Detail from './pages/detail';
 import StaffProject from './pages/staffProject';
 import Login from './pages/login';
 import Admin from './pages/admin';
+import TInfo from './pages/tInfo';
+import SInfo from './pages/sInfo';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/detail/teacher/:id" element={<Detail type="teacher" />} />
           <Route path="/detail/staff/:id" element={<Detail type="staff" />} />
           <Route path="/staffProject" element={<StaffProject />} />
+          <Route path="/tInfo" element={<TInfo />} />
+          <Route path="/sInfo" element={<SInfo />} />
         </Routes>
       </div >
     </BrowserRouter>

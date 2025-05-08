@@ -52,7 +52,6 @@ function Detail({ type }) {
                 setRole(response.data.role); // ตั้งค่า role จาก API
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -71,7 +70,6 @@ function Detail({ type }) {
                 setPersonDetail(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         };
 
@@ -88,7 +86,6 @@ function Detail({ type }) {
                 setAssignations(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
-                alert('เกิดข้อผิดพลาด');
             }
         };
 
