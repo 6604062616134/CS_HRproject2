@@ -113,29 +113,20 @@ function TInfo() {
 
     const handleAddTeacher = async () => {
         try {
-            // เรียก API เพื่อเพิ่มข้อมูลอาจารย์
+            // เรียก API เพื่อเพิ่มข้อมูลอาจารย์และบัญชีผู้ใช้
             const teacherResponse = await axios.post('http://localhost:8000/teacher/create', {
                 t_name: newTeacher.t_name,
                 t_code: newTeacher.t_code,
                 t_tel: newTeacher.t_tel,
                 t_email: newTeacher.t_email,
                 t_AcademicRanks: newTeacher.t_AcademicRanks,
+                username: newTeacher.username, // ส่ง username
+                password: newTeacher.password, // ส่ง password
             }, {
                 withCredentials: true,
             });
 
-            const newTeacherId = teacherResponse.data.t_ID; // สมมติว่า API ส่ง t_ID กลับมา
-
-            // สร้างบัญชีผู้ใช้สำหรับอาจารย์
-            const userResponse = await axios.post('http://localhost:8000/user/createUser', {
-                username: newTeacher.username, // ใช้ username จากฟิลด์
-                password: newTeacher.password, // ใช้ password จากฟิลด์
-                role: 'teacher',
-                t_ID: newTeacherId,
-            }, {
-                withCredentials: true,
-            });
-
+            const newTeacherId = teacherResponse.data.t_ID; // รับ t_ID ที่สร้างใหม่จาก API
             alert('เพิ่มอาจารย์สำเร็จ!');
             setIsAddModalOpen(false);
 
@@ -348,7 +339,7 @@ function TInfo() {
                         <div className="flex space-x-4 mb-4">
                             {/* Dropdown สำหรับตำแหน่งทางวิชาการ */}
                             <div className="flex-1 relative">
-                                <label className="block text-sm font-medium text-gray-700">ตำแหน่งทางวิชาการ</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">ตำแหน่งทางวิชาการ</label>
                                 <div
                                     className="px-4 py-2 border text-sm rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-sm hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -388,10 +379,11 @@ function TInfo() {
                                 )}
                             </div>
                             <div className="w-2/3">
-                                <label className="block text-sm font-medium text-gray-700">ชื่อ</label>
+                                <label className="block text-sm font-medium text-gray-700">ชื่อ-นามสกุล</label>
                                 <input
                                     type="text"
                                     value={newTeacher.t_name}
+                                    placeholder="กรอกชื่อ-นามสกุล"
                                     onChange={(e) => setNewTeacher({ ...newTeacher, t_name: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
@@ -402,6 +394,7 @@ function TInfo() {
                                 <label className="block text-sm font-medium text-gray-700">อีเมล</label>
                                 <input
                                     type="email"
+                                    placeholder="กรอกอีเมล"
                                     value={newTeacher.t_email}
                                     onChange={(e) => setNewTeacher({ ...newTeacher, t_email: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
@@ -413,6 +406,7 @@ function TInfo() {
                                 <label className="block text-sm font-medium text-gray-700">รหัส</label>
                                 <input
                                     type="text"
+                                    placeholder="กรอกรหัสอาจารย์"
                                     value={newTeacher.t_code}
                                     onChange={(e) => setNewTeacher({ ...newTeacher, t_code: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
@@ -423,6 +417,7 @@ function TInfo() {
                                 <input
                                     type="text"
                                     value={newTeacher.t_tel}
+                                    placeholder="กรอกเบอร์โทรภายใน 4 หลัก"
                                     onChange={(e) => setNewTeacher({ ...newTeacher, t_tel: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
@@ -434,6 +429,7 @@ function TInfo() {
                                 <input
                                     type="text"
                                     value={newTeacher.username}
+                                    placeholder="กรอกชื่อบัญชีอาจารย์"
                                     onChange={(e) => setNewTeacher({ ...newTeacher, username: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
@@ -443,6 +439,7 @@ function TInfo() {
                                 <input
                                     type="password"
                                     value={newTeacher.password}
+                                    placeholder="กรอกรหัสผ่านบัญชี"
                                     onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />

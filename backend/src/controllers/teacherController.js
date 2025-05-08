@@ -1,4 +1,5 @@
 const db = require('../db');
+const bcrypt = require('bcryptjs');
 
 const TeacherController = {
     async getAllTeachers(req, res) {
@@ -26,13 +27,42 @@ const TeacherController = {
     },
 
     async createTeacher(req, res) {
-        const { t_name, t_code, t_tel, t_email, t_AcademicRanks } = req.body;
+        const { t_name, t_code, t_tel, t_email, t_AcademicRanks, username, password } = req.body; // รับ username และ password
         try {
-            const sql_params = [t_name, t_code, t_tel, t_email, t_AcademicRanks];
-            await db.query('INSERT INTO teacher (t_name, t_code, t_tel, t_email, t_AcademicRanks) VALUES (?, ?, ?, ?, ?)', sql_params);
-            res.status(201).json({ message: 'Teacher created successfully' });
+            // ดึง t_ID ล่าสุดจากตาราง teacher หรือ admin
+            const [latestIdResult] = await db.query(`
+                SELECT MAX(t_ID) AS latestId FROM (
+                    SELECT t_ID FROM teacher
+                    UNION
+                    SELECT t_ID FROM admin
+                ) AS combined
+            `);
+            const latestId = latestIdResult[0]?.latestId || 0; // ถ้าไม่มีค่า ให้เริ่มต้นที่ 0
+            const newId = latestId + 1; // เพิ่มค่า t_ID ใหม่
+    
+            // แฮชพาสเวิร์ดก่อนเพิ่มลงในตาราง admin
+            const hashedPassword = await bcrypt.hash(password, 10); // แฮชพาสเวิร์ดด้วย bcrypt
+    
+            // เพิ่มข้อมูลลงในตาราง teacher
+            const sql_params_teacher = [newId, t_name, t_code, t_tel, t_email, t_AcademicRanks];
+            await db.query(
+                'INSERT INTO teacher (t_ID, t_name, t_code, t_tel, t_email, t_AcademicRanks) VALUES (?, ?, ?, ?, ?, ?)',
+                sql_params_teacher
+            );
+    
+            // เพิ่มข้อมูลลงในตาราง admin
+            const role = 'teacher'; // กำหนด role เป็น teacher
+            const createdDate = new Date(); // วันที่สร้าง
+            const modifiedDate = new Date(); // วันที่แก้ไขล่าสุด
+            const sql_params_admin = [newId, username, hashedPassword, role, createdDate, modifiedDate];
+            await db.query(
+                'INSERT INTO admin (t_ID, username, password, role, createdDate, modifiedDate) VALUES (?, ?, ?, ?, ?, ?)',
+                sql_params_admin
+            );
+    
+            res.status(201).json({ message: 'Teacher and admin created successfully', t_ID: newId });
         } catch (error) {
-            console.error('Error creating teacher:', error);
+            console.error('Error creating teacher and admin:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     },
@@ -63,37 +93,6 @@ const TeacherController = {
             res.status(500).json({ error: 'Internal server error' });
         }
     },
-
-    // async getAllTeacherAccount(req, res) {
-    //     try {
-    //         console.log('Fetching all teacher accounts...'); // Log the request for debugging
-    //         const query = `
-    //             SELECT 
-    //                 teacher.t_ID,
-    //                 teacher.t_AcademicRanks,
-    //                 teacher.t_name,
-    //                 teacher.t_code,
-    //                 teacher.t_tel,
-    //                 teacher.t_email,
-    //                 admin.username,
-    //                 admin.password
-    //             FROM teacher
-    //             LEFT JOIN admin ON teacher.t_ID = admin.t_ID
-    //         `;
-    //         const [results] = await db.query(query);
-
-    //         console.log('Results:', results); // Log the results for debugging
-    
-    //         if (!results || results.length === 0) {
-    //             return res.status(404).json({ error: 'No teacher accounts found' });
-    //         }
-    
-    //         res.status(200).json(results);
-    //     } catch (error) {
-    //         console.error('Error fetching teacher accounts:', error);
-    //         res.status(500).json({ error: 'Internal server error' });
-    //     }
-    // }
 
 }
 
