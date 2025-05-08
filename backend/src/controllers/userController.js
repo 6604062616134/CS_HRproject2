@@ -22,7 +22,7 @@ const UserController = {
             const user = rows[0];
 
             // ตรวจสอบ role
-            if (user.role !== 'teacher' && user.role !== 'superadmin') {
+            if (user.role !== 'teacher' && user.role !== 'staff' && user.role !== 'superadmin') {
                 return res.status(403).json({ error: 'Access denied. Invalid role' });
             }
 

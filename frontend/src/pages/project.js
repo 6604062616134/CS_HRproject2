@@ -248,7 +248,7 @@ function Project() {
                                         <td className="px-2 py-2 border text-xs text-center col-room">{student.room}</td>
                                         <td className="px-2 py-2 border text-xs text-center col-grade">{student.grade}</td>
                                         <td className="px-2 py-2 border text-xs text-center col-note">{student.note}</td>
-                                        <td className="px-2 py-2 border text-xs text-center print:hidden col-edit">
+                                        <td className="px-2 py-2 border text-xs text-center print:hidden w-[5%]">
                                             {role === 'superadmin' && (
                                                 <button
                                                     className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"

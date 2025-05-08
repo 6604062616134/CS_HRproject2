@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function Navbar({ className = "" }) {
+function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isTeacherListOpen, setIsTeacherListOpen] = useState(false);
     const [isStaffListOpen, setIsStaffListOpen] = useState(false);
@@ -11,6 +11,7 @@ function Navbar({ className = "" }) {
     const [role, setRole] = useState('');
     const [staff, setStaff] = useState([]);
     const navigate = useNavigate();
+    const [loggedInUser, setLoggedInUser] = useState(null);
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -62,6 +63,21 @@ function Navbar({ className = "" }) {
         fetchUserRole();
     }, []);
 
+    useEffect(() => {
+        const fetchLoggedInUser = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/user/getUser', {
+                    withCredentials: true,
+                });
+                setLoggedInUser(response.data); // เก็บข้อมูลผู้ใช้ใน state
+            } catch (error) {
+                console.error('Error fetching logged-in user:', error);
+            }
+        };
+
+        fetchLoggedInUser();
+    }, []);
+
     const handleToggle = () => {
         setIsMenuOpen(!isMenuOpen); // สลับสถานะเปิด/ปิดเมนูหลัก
     };
@@ -110,13 +126,17 @@ function Navbar({ className = "" }) {
                         </div>
                     </div>
 
-                    {/* ปุ่มออกจากระบบ */}
-                    <button
-                        className="text-white underline text-xs hover:text-red-600 transition-all duration-300 ease-in-out ml-auto"
-                        onClick={handleLogout}
-                    >
-                        ออกจากระบบ
-                    </button>
+                    <div className="flex items-center space-x-4">
+                        <div className="text-white text-sm font-light">
+                            {loggedInUser ? `สวัสดี, ${loggedInUser.username}` : 'กำลังโหลด...'}
+                        </div>
+                        <button
+                            className="text-white underline text-xs hover:text-red-600 transition-all duration-300 ease-in-out"
+                            onClick={handleLogout}
+                        >
+                            ออกจากระบบ
+                        </button>
+                    </div>
                 </div>
             </nav>
             {/* ไซด์บาร์ */}

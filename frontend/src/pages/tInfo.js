@@ -10,6 +10,25 @@ function TInfo() {
     const [teacherAccountData, setTeacherAccountData] = useState(null);
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [academicRanks, setAcademicRanks] = useState([
+        'ผศ.',
+        'ผศ.ดร.',
+        'รศ.ดร.',
+        'ศ.ดร.',
+        'อ.',
+        'อ.ดร.',
+    ]);
+    const [newTeacher, setNewTeacher] = useState({
+        t_name: "",
+        t_code: "",
+        t_tel: "",
+        t_email: "",
+        t_AcademicRanks: "",
+        username: "", // เพิ่มฟิลด์ username
+        password: "", // เพิ่มฟิลด์ password
+    });
 
     useEffect(() => {
         const fetchTeacherData = async () => {
@@ -92,13 +111,57 @@ function TInfo() {
         }
     };
 
+    const handleAddTeacher = async () => {
+        try {
+            // เรียก API เพื่อเพิ่มข้อมูลอาจารย์
+            const teacherResponse = await axios.post('http://localhost:8000/teacher/create', {
+                t_name: newTeacher.t_name,
+                t_code: newTeacher.t_code,
+                t_tel: newTeacher.t_tel,
+                t_email: newTeacher.t_email,
+                t_AcademicRanks: newTeacher.t_AcademicRanks,
+            }, {
+                withCredentials: true,
+            });
+
+            const newTeacherId = teacherResponse.data.t_ID; // สมมติว่า API ส่ง t_ID กลับมา
+
+            // สร้างบัญชีผู้ใช้สำหรับอาจารย์
+            const userResponse = await axios.post('http://localhost:8000/user/createUser', {
+                username: newTeacher.username, // ใช้ username จากฟิลด์
+                password: newTeacher.password, // ใช้ password จากฟิลด์
+                role: 'teacher',
+                t_ID: newTeacherId,
+            }, {
+                withCredentials: true,
+            });
+
+            alert('เพิ่มอาจารย์สำเร็จ!');
+            setIsAddModalOpen(false);
+
+            // อัปเดตข้อมูลในตาราง
+            setTeacherData((prevData) => [...prevData, { ...newTeacher, t_ID: newTeacherId }]);
+        } catch (error) {
+            console.error('Error adding teacher:', error);
+            alert('เกิดข้อผิดพลาดในการเพิ่มอาจารย์');
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen">
             <Navbar className="print:hidden" />
             <div className="flex flex-col p-4 px-20 mt-16 print:mt-0 flex-grow w-full">
-                <h2 className="text-xl font-semibold mb-4">ข้อมูลอาจารย์</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">ข้อมูลอาจารย์</h2>
+                    <button
+                        className="px-3 py-1 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                        onClick={() => setIsAddModalOpen(true)}
+                    >
+                        เพิ่มอาจารย์
+                    </button>
+                </div>
                 <div className="overflow-x-auto">
-                    <table className="table-auto min-w-full max-w-xl mx-auto bg-white border border-gray-300 rounded-3xl">
+                    <table className="table-auto text-xs min-w-full max-w-xl mx-auto bg-white border border-gray-300 rounded-3xl">
                         <thead>
                             <tr className="bg-gray-200 text-gray-700">
                                 <th className="px-2 py-2 border text-xs text-center w-[3%]">ID</th>
@@ -148,9 +211,9 @@ function TInfo() {
             </div>
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-96">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-lg font-semibold mb-4">แก้ไขข้อมูลอาจารย์</h3>
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xl">
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="text-md font-semibold">แก้ไขข้อมูลอาจารย์</div>
                             <button
                                 className="text-red-600 underline text-sm hover:text-red-800 transition-all duration-200"
                                 onClick={() => handleDelete(editTeacher.t_ID)}
@@ -164,6 +227,7 @@ function TInfo() {
                                 <input
                                     type={showOldPassword ? "text" : "password"}
                                     value={passwords[editTeacher.t_ID]?.oldPassword || ""}
+                                    placeholder="กรอกรหัสผ่านเดิม"
                                     onChange={(e) =>
                                         setPasswords((prev) => ({
                                             ...prev,
@@ -191,6 +255,7 @@ function TInfo() {
                                 <input
                                     type={showNewPassword ? "text" : "password"}
                                     value={passwords[editTeacher.t_ID]?.newPassword || ""}
+                                    placeholder="กรอกรหัสผ่านใหม่"
                                     onChange={(e) =>
                                         setPasswords((prev) => ({
                                             ...prev,
@@ -213,13 +278,13 @@ function TInfo() {
                         </div>
                         <div className="flex justify-end space-x-2">
                             <button
-                                className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                className="px-4 py-2 bg-gray-300 rounded-3xl text-sm hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={() => setIsModalOpen(false)}
                             >
                                 ยกเลิก
                             </button>
                             <button
-                                className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                className="px-4 py-2 bg-[#000066] text-white text-sm rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={() =>
                                     handleChangePassword(
                                         editTeacher.t_ID,
@@ -236,12 +301,13 @@ function TInfo() {
                             <input
                                 type="text"
                                 value={editTeacher.t_AcademicRanks}
+                                placeholder="กรอกตำแหน่งทางวิชาการ"
                                 onChange={(e) => setEditTeacher({ ...editTeacher, t_AcademicRanks: e.target.value })}
                                 className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">เบอร์โทร</label>
+                            <label className="block text-sm font-medium text-gray-700">เบอร์โทรภายใน</label>
                             <input
                                 type="text"
                                 value={editTeacher.t_tel}
@@ -260,14 +326,139 @@ function TInfo() {
                         </div>
                         <div className="flex justify-end space-x-2">
                             <button
-                                className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                className="px-4 py-2 text-sm bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={() => setIsModalOpen(false)}
                             >
                                 ยกเลิก
                             </button>
                             <button
-                                className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                className="px-4 py-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={handleSave}
+                            >
+                                บันทึก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {isAddModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-2xl">
+                        <div className="font-semibold mb-4 text-md">เพิ่มอาจารย์</div>
+                        <div className="flex space-x-4 mb-4">
+                            {/* Dropdown สำหรับตำแหน่งทางวิชาการ */}
+                            <div className="flex-1 relative">
+                                <label className="block text-sm font-medium text-gray-700">ตำแหน่งทางวิชาการ</label>
+                                <div
+                                    className="px-4 py-2 border text-sm rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-sm hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                >
+                                    {newTeacher.t_AcademicRanks || 'เลือกตำแหน่งวิชาการ'}
+                                    <span className={`ml-2 transform transition-transform duration-300 ease-in-out ${isDropdownOpen ? 'rotate-180' : ''}`}>
+                                        ▼
+                                    </span>
+                                </div>
+                                {isDropdownOpen && (
+                                    <div
+                                        className="absolute z-[9999] text-sm mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
+                                        style={{ top: '100%' }}
+                                    >
+                                        <div
+                                            className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
+                                            onClick={() => {
+                                                setNewTeacher({ ...newTeacher, t_AcademicRanks: '' });
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            -
+                                        </div>
+                                        {['ผศ.', 'ผศ.ดร.', 'รศ.ดร.', 'ศ.ดร.', 'อ.', 'อ.ดร.'].map((rank) => (
+                                            <div
+                                                key={rank}
+                                                className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
+                                                onClick={() => {
+                                                    setNewTeacher({ ...newTeacher, t_AcademicRanks: rank });
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                            >
+                                                {rank}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="w-2/3">
+                                <label className="block text-sm font-medium text-gray-700">ชื่อ</label>
+                                <input
+                                    type="text"
+                                    value={newTeacher.t_name}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, t_name: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex space-x-4 mb-4 text-sm">
+                            <div className="w-full">
+                                <label className="block text-sm font-medium text-gray-700">อีเมล</label>
+                                <input
+                                    type="email"
+                                    value={newTeacher.t_email}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, t_email: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex space-x-4 mb-4 text-sm">
+                            <div className="w-1/2">
+                                <label className="block text-sm font-medium text-gray-700">รหัส</label>
+                                <input
+                                    type="text"
+                                    value={newTeacher.t_code}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, t_code: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <label className="block text-sm font-medium text-gray-700">เบอร์โทรภายใน</label>
+                                <input
+                                    type="text"
+                                    value={newTeacher.t_tel}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, t_tel: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex space-x-4 mb-4 text-sm">
+                            <div className="w-1/2">
+                                <label className="block text-sm font-medium text-gray-700">Username</label>
+                                <input
+                                    type="text"
+                                    value={newTeacher.username}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, username: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <label className="block text-sm font-medium text-gray-700">Password</label>
+                                <input
+                                    type="password"
+                                    value={newTeacher.password}
+                                    onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end space-x-2 text-sm">
+                            <button
+                                className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                onClick={() => setIsAddModalOpen(false)}
+                            >
+                                ยกเลิก
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                onClick={handleAddTeacher}
                             >
                                 บันทึก
                             </button>

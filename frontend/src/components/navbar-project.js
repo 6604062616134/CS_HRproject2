@@ -12,6 +12,7 @@ function NavbarProject({ fetchData }) {
     const [staff, setStaff] = useState([]);
     const [role, setRole] = useState('');
     const navigate = useNavigate();
+    const [loggedInUser, setLoggedInUser] = useState(null);
     const [formData, setFormData] = useState({
         datetime: '',
         thesisnameTH: '',
@@ -129,6 +130,21 @@ function NavbarProject({ fetchData }) {
         fetchStaff();
     }, []);
 
+    useEffect(() => {
+        const fetchLoggedInUser = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/user/getUser', {
+                    withCredentials: true,
+                });
+                setLoggedInUser(response.data); // เก็บข้อมูลผู้ใช้ใน state
+            } catch (error) {
+                console.error('Error fetching logged-in user:', error);
+            }
+        };
+
+        fetchLoggedInUser();
+    }, []);
+
     const handleLogout = async () => {
         try {
             // แสดงกล่องยืนยันก่อนล็อกเอาท์
@@ -180,7 +196,11 @@ function NavbarProject({ fetchData }) {
                             )}
                         </div>
                     </div>
-                    <div className='flex items-center gap-4'>
+                    <div className="flex items-center justify-end gap-4">
+                        <div className="text-white text-sm font-light">
+                            {loggedInUser ? `สวัสดี, ${loggedInUser.username}` : 'กำลังโหลด...'}
+                        </div>
+
                         {role === 'superadmin' && (
                             <button
                                 className="px-3 py-1 bg-white text-xs text-black rounded-3xl shadow-lg hover:bg-green-600 hover:scale-105 hover:text-white transition-all duration-300 ease-in-out"
