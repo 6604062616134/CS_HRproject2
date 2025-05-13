@@ -184,42 +184,46 @@ function StaffProject() {
                     <table className="w-full bg-white border border-gray-300 rounded-3xl print-cell">
                         <thead>
                             <tr className="bg-gray-200 text-gray-700">
-                                <th className="px-4 py-2 border text-xs w-10">ลำดับ</th>
-                                <th className="px-4 py-2 border text-xs w-24">รหัสนักศึกษา</th>
-                                <th className="px-4 py-2 border text-xs">ชื่อนักศึกษา</th>
-                                <th className="px-4 py-2 border text-xs">ปริญญานิพนธ์เรื่อง</th>
-                                <th className="px-4 py-2 border text-xs w-20">ปีการศึกษา</th>
-                                <th className="px-4 py-2 border text-xs w-20">อาจารย์ที่ปรึกษา</th>
-                                <th className="px-4 py-2 border text-xs w-20">เจ้าหน้าที่</th>
-                                <th className="px-4 py-2 border text-xs w-24">สถานะการตรวจ</th>
-                                <th className="px-4 py-2 border text-xs w-24">หมายเหตุ</th>
-                                <th className="px-4 py-2 border text-xs print:hidden w-20">แก้ไข</th>
+                                <th className="px-2 py-2 border text-xs min-w-[40px] max-w-[40px] break-words whitespace-normal">ลำดับ</th>
+                                <th className="px-2 py-2 border text-xs min-w-[80px] max-w-[100px] break-words whitespace-normal">รหัสนักศึกษา</th>
+                                <th className="px-2 py-2 border text-xs min-w-[100px] max-w-[140px] break-words whitespace-normal">ชื่อนักศึกษา</th>
+                                <th className="px-2 py-2 border text-xs min-w-[140px] max-w-[200px] break-words whitespace-normal">ปริญญานิพนธ์เรื่อง</th>
+                                <th className="px-2 py-2 border text-xs min-w-[70px] max-w-[90px] break-words whitespace-normal">ปีการศึกษา</th>
+                                <th className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">อาจารย์ที่ปรึกษา</th>
+                                <th className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">เจ้าหน้าที่</th>
+                                <th className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">สถานะการตรวจ</th>
+                                <th className="px-2 py-2 border text-xs min-w-[80px] max-w-[120px] break-words whitespace-normal">หมายเหตุ</th>
+                                <th className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">แก้ไข</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredData.length > 0 ? (
                                 filteredData.map((item, index) => (
                                     <tr key={index} className="text-center">
-                                        <td className="px-4 py-2 border text-xs">{index + 1}</td>
-                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal">
+                                        <td className="px-2 py-2 border text-xs min-w-[40px] max-w-[40px]">{index + 1}</td>
+                                        <td className="px-2 py-2 border text-xs min-w-[80px] max-w-[100px] break-words whitespace-normal">
                                             {item.studentID_1 || '-'} <br /> {item.studentID_2 || '-'}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal">
+                                        <td className="px-2 py-2 border text-xs min-w-[100px] max-w-[140px] break-words whitespace-normal">
                                             {item.studentName1 || '-'} <br /> {item.studentName2 || '-'}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal">
+                                        <td className="px-2 py-2 border text-xs min-w-[140px] max-w-[200px] break-words whitespace-normal">
                                             {item.thesisNameTH || '-'} <br /> {item.thesisNameEN || '-'}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs text-center">{item.year || '-'}</td>
-                                        <td className="px-4 py-2 border text-xs text-center">{item.teacherName || '-'}</td>
-                                        <td className="px-4 py-2 border text-xs text-center">{item.staffName || '-'}</td>
-                                        <td className="px-4 py-2 border text-xs text-center">
-                                            {item.checked ? 'ตรวจแล้ว' : 'ยังไม่ตรวจ'}
+                                        <td className="px-2 py-2 border text-xs min-w-[70px] max-w-[90px] break-words whitespace-normal">{item.year || '-'}</td>
+                                        <td className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">{item.teacherName || '-'}</td>
+                                        <td className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">{item.staffName || '-'}</td>
+                                        <td className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">
+                                            {item.checked === 1
+                                                ? 'ตรวจแล้ว'
+                                                : item.checked === 2
+                                                    ? 'กำลังตรวจ'
+                                                    : 'ยังไม่ตรวจ'}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal max-w-[200px]">
+                                        <td className="px-2 py-2 border text-xs min-w-[80px] max-w-[120px] break-words whitespace-normal">
                                             {item.note || '-'}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs text-center print:hidden">
+                                        <td className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">
                                             {role === 'superadmin' && (
                                                 <button
                                                     className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
@@ -233,7 +237,7 @@ function StaffProject() {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="9" className="px-4 py-2 border text-center text-xs text-gray-500">
+                                    <td colSpan="10" className="px-4 py-2 border text-center text-xs text-gray-500">
                                         ไม่พบข้อมูล
                                     </td>
                                 </tr>
@@ -397,7 +401,7 @@ function StaffProject() {
                                 {/* สถานะการตรวจสอบ */}
                                 <div className="flex-1 min-w-[200px]">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">สถานะการตรวจสอบ</label>
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-4 text-xs mt-4">
                                         <label className="flex items-center">
                                             <input
                                                 type="radio"
@@ -407,6 +411,16 @@ function StaffProject() {
                                                 onChange={() => setEditData({ ...editData, checked: 1 })}
                                             />
                                             ตรวจแล้ว
+                                        </label>
+                                        <label className="flex items-center">
+                                            <input
+                                                type="radio"
+                                                name="checked"
+                                                value="2"
+                                                checked={editData?.checked === 2} // ตรวจสอบว่าค่า checked เป็น 2
+                                                onChange={() => setEditData({ ...editData, checked: 2 })}
+                                            />
+                                            กำลังตรวจ
                                         </label>
                                         <label className="flex items-center">
                                             <input

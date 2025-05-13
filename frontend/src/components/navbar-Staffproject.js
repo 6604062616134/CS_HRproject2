@@ -340,7 +340,7 @@ function NavbarStaffProject() {
                                     {/* สถานะการตรวจสอบ */}
                                     <div className="flex-1 min-w-[150px]">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">สถานะการตรวจสอบ</label>
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2 mt-4 text-xs">
                                             <label className="flex items-center">
                                                 <input
                                                     type="radio"
@@ -362,6 +362,17 @@ function NavbarStaffProject() {
                                                     className="mr-2"
                                                 />
                                                 ยังไม่ตรวจ
+                                            </label>
+                                            <label className="flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="checked"
+                                                    value="pending"
+                                                    checked={formData.checked === "pending"}
+                                                    onChange={handleChange}
+                                                    className="mr-2"
+                                                />
+                                                กำลังตรวจ
                                             </label>
                                         </div>
                                     </div>

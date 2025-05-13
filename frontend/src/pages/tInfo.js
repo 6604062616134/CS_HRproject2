@@ -288,25 +288,6 @@ function TInfo() {
                             </button>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">ตำแหน่งทางวิชาการ</label>
-                            <input
-                                type="text"
-                                value={editTeacher.t_AcademicRanks}
-                                placeholder="กรอกตำแหน่งทางวิชาการ"
-                                onChange={(e) => setEditTeacher({ ...editTeacher, t_AcademicRanks: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">เบอร์โทรภายใน</label>
-                            <input
-                                type="text"
-                                value={editTeacher.t_tel}
-                                onChange={(e) => setEditTeacher({ ...editTeacher, t_tel: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                            />
-                        </div>
-                        <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">อีเมล</label>
                             <input
                                 type="email"
@@ -315,19 +296,70 @@ function TInfo() {
                                 className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
-                        <div className="flex justify-end space-x-2">
-                            <button
-                                className="px-4 py-2 text-sm bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={() => setIsModalOpen(false)}
-                            >
-                                ยกเลิก
-                            </button>
-                            <button
-                                className="px-4 py-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={handleSave}
-                            >
-                                บันทึก
-                            </button>
+                        <div className="flex flex-row gap-2">
+                            <div className="mb-4 relative">
+                                <label className="block text-sm font-medium text-gray-700">ตำแหน่งทางวิชาการ</label>
+                                <div
+                                    className="px-4 py-3 border text-sm rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-sm hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
+                                    onClick={() => setIsDropdownOpen(prev => !prev)}
+                                >
+                                    {editTeacher.t_AcademicRanks || 'เลือกตำแหน่งวิชาการ'}
+                                    <span className={`ml-2 transform transition-transform duration-300 ease-in-out ${isDropdownOpen ? 'rotate-180' : ''}`}>
+                                        ▼
+                                    </span>
+                                </div>
+                                {isDropdownOpen && (
+                                    <div
+                                        className="absolute z-[9999] text-sm mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
+                                        style={{ top: '100%' }}
+                                    >
+                                        <div
+                                            className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
+                                            onClick={() => {
+                                                setEditTeacher({ ...editTeacher, t_AcademicRanks: '' });
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            -
+                                        </div>
+                                        {academicRanks.map((rank) => (
+                                            <div
+                                                key={rank}
+                                                className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
+                                                onClick={() => {
+                                                    setEditTeacher({ ...editTeacher, t_AcademicRanks: rank });
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                            >
+                                                {rank}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">เบอร์โทรภายใน</label>
+                                <input
+                                    type="text"
+                                    value={editTeacher.t_tel}
+                                    onChange={(e) => setEditTeacher({ ...editTeacher, t_tel: e.target.value })}
+                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                />
+                            </div>
+                            <div className="flex items-end mb-4 gap-2">
+                                <button
+                                    className="px-4 py-2 text-sm bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    onClick={() => setIsModalOpen(false)}
+                                >
+                                    ยกเลิก
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    onClick={handleSave}
+                                >
+                                    บันทึก
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

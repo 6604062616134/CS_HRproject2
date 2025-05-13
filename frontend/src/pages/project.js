@@ -191,35 +191,35 @@ function Project() {
                     <table className="w-full bg-white border border-gray-300 rounded-3xl print-cell">
                         <thead>
                             <tr className="bg-gray-200 text-gray-700">
-                                <th className="px-4 py-2 border text-xs col-index">ลำดับ</th>
-                                <th className="px-4 py-2 border text-xs col-date">วันที่สอบ</th>
-                                <th className="px-4 py-2 border text-xs col-nameHeader">หัวข้อ</th>
-                                <th className="px-4 py-2 border text-xs col-id">รหัส</th>
-                                <th className="px-4 py-2 border text-xs col-name">ชื่อ-นามสกุล</th>
-                                <th className="px-4 py-2 border text-xs col-chairman rotate">ประธานกรรมการ</th>
-                                <th className="px-4 py-2 border text-xs col-director rotate">กรรมการ</th>
-                                <th className="px-4 py-2 border text-xs col-main-mentor rotate">อาจารย์ที่ปรึกษาหลัก</th>
-                                <th className="px-4 py-2 border text-xs col-co-mentor rotate">อาจารย์ที่ปรึกษาร่วม</th>
-                                <th className="px-4 py-2 border text-xs col-year rotate">ปีการศึกษา</th>
-                                <th className="px-4 py-2 border text-xs col-room rotate">ห้องสอบ</th>
-                                <th className="px-4 py-2 border text-xs col-grade rotate">เกรดที่ได้</th>
-                                <th className="px-4 py-2 border text-xs col-note rotate">หมายเหตุ</th>
-                                <th className="px-4 py-2 border text-xs print:hidden col-edit">แก้ไข</th>
+                                <th className="px-4 py-2 border text-xs max-w-[8px] min-w-[8px] break-words whitespace-normal">ลำดับ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[15px] min-w-[15px] break-words whitespace-normal">วันที่สอบ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[120px] min-w-[120px] break-words whitespace-normal">หัวข้อ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[38px] min-w-[38px] break-words whitespace-normal">รหัส</th>
+                                <th className="px-4 py-2 border text-xs max-w-[80px] min-w-[80px] break-words whitespace-normal">ชื่อ-นามสกุล</th>
+                                <th className="px-4 py-2 border text-xs max-w-[20px] min-w-[20px] rotate break-words whitespace-normal">ประธานกรรมการ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[20px] min-w-[20px] rotate break-words whitespace-normal">กรรมการ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[20px] min-w-[20px] rotate break-words whitespace-normal">อาจารย์ที่ปรึกษาหลัก</th>
+                                <th className="px-4 py-2 border text-xs max-w-[20px] min-w-[20px] rotate break-words whitespace-normal">อาจารย์ที่ปรึกษาร่วม</th>
+                                <th className="px-4 py-2 border text-xs max-w-[20px] min-w-[20px] rotate break-words whitespace-normal">ปีการศึกษา</th>
+                                <th className="px-4 py-2 border text-xs max-w-[22px] min-w-[22px] rotate break-words whitespace-normal">ห้องสอบ</th>
+                                <th className="px-4 py-2 border text-xs max-w-[10px] min-w-[10px] rotate break-words whitespace-normal">เกรดที่ได้</th>
+                                <th className="px-4 py-2 border text-xs max-w-[18px] min-w-[18px] rotate break-words whitespace-normal">หมายเหตุ</th>
+                                <th className="px-4 py-2 border text-xs print:hidden max-w-[20px] min-w-[20px] break-words whitespace-normal">แก้ไข</th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredStudents.length > 0 ? (
                                 filteredStudents.map((student, index) => (
                                     <tr key={student.id || index}>
-                                        <td className="px-4 py-2 border text-xs text-center col-index">{index + 1}</td>
-                                        <td className="px-4 py-2 border text-xs text-center col-date">
+                                        <td className="px-4 py-2 border text-xs text-center max-w-[8px] min-w-[8px] break-words whitespace-normal">{index + 1}</td>
+                                        <td className="px-4 py-2 border text-xs text-center max-w-[15px] min-w-[15px] break-words whitespace-normal">
                                             {new Date(student.datetime).toLocaleDateString('th-TH', {
                                                 day: 'numeric',
                                                 month: 'numeric',
                                                 year: 'numeric',
                                             })}
                                         </td>
-                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal col-thesis">
+                                        <td className="px-4 py-2 border text-xs break-words whitespace-normal max-w-[120px] min-w-[120px] break-words whitespace-normal">
                                             {student.thesisnameTH || student.thesisnameEN ? (
                                                 <>
                                                     {student.thesisnameTH && <span>{student.thesisnameTH}</span>}
@@ -230,25 +230,25 @@ function Project() {
                                                 <span>ไม่มีข้อมูล</span>
                                             )}
                                         </td>
-                                        <td className="px-2 py-2 border text-xs break-words whitespace-normal col-id">
+                                        <td className="px-2 py-2 border text-xs break-words whitespace-normal max-w-[38px] min-w-[38px] break-words whitespace-normal">
                                             {student.studentCode1}
                                             <br />
                                             {student.studentCode2}
                                         </td>
-                                        <td className="px-2 py-2 border text-xs break-words whitespace-normal col-name">
+                                        <td className="px-2 py-2 border text-xs break-words whitespace-normal max-w-[80px] min-w-[80px] break-words whitespace-normal">
                                             {student.FLname1}
                                             <br />
                                             {student.FLname2}
                                         </td>
-                                        <td className="px-2 py-2 border text-xs text-center col-chairman">{student.chairman}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-director">{student.director}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-main-mentor">{student.MainMentor}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-co-mentor">{student.CoMentor}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-year">{student.year}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-room">{student.room}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-grade">{student.grade}</td>
-                                        <td className="px-2 py-2 border text-xs text-center col-note">{student.note}</td>
-                                        <td className="px-2 py-2 border text-xs text-center print:hidden w-[5%]">
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[20px] min-w-[20px] break-words whitespace-normal">{student.chairman}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[20px] min-w-[20px] break-words whitespace-normal">{student.director}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[20px] min-w-[20px] break-words whitespace-normal">{student.MainMentor}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[20px] min-w-[20px] break-words whitespace-normal">{student.CoMentor}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[20px] min-w-[20px] break-words whitespace-normal">{student.year}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[22px] min-w-[22px] break-words whitespace-normal">{student.room}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[10px] min-w-[10px] break-words whitespace-normal">{student.grade}</td>
+                                        <td className="px-2 py-2 border text-xs text-center max-w-[18px] min-w-[18px] break-words whitespace-normal">{student.note}</td>
+                                        <td className="px-2 py-2 border text-xs text-center print:hidden max-w-[0px] min-w-[20px] break-words whitespace-normal">
                                             {role === 'superadmin' && (
                                                 <button
                                                     className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
