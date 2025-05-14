@@ -178,6 +178,19 @@ const UserController = {
         }
     },
 
+    async getAllStaffAccount(req, res) {
+        try {
+            const [rows] = await db.query('SELECT * FROM admin WHERE role = ?', ['staff']);
+            if (rows.length === 0) {
+                return res.status(404).json({ error: 'No staff accounts found' });
+            }
+            res.status(200).json(rows); // ส่งข้อมูลผู้ใช้ทั้งหมดกลับไป
+        } catch (error) {
+            console.error('Error fetching all staff accounts:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
     async changePassword(req, res) {
         try {
             const { t_ID } = req.params;

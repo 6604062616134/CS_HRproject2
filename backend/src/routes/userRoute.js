@@ -7,7 +7,7 @@ const authenticateToken = require('../middleware/authenticateToken');
 router.post('/login', UserController.login);
 
 // Protected routes (ต้องล็อกอิน)
-router.post('/createUser', authenticateToken, UserController.createUser);
+router.post('/createUser',authenticateToken, UserController.createUser);
 router.post('/logout', authenticateToken, UserController.logout);
 
 router.get('/getUser', authenticateToken, UserController.getUser);
@@ -20,5 +20,6 @@ router.put('/changePassword/:t_ID', authenticateToken, UserController.changePass
 router.delete('/deleteUser/:id', authenticateToken, UserController.deleteUser);
 
 router.get('/getAllTeacherAccount', authenticateToken, UserController.getAllTeacherAccount);
+router.get('/getAllStaffAccount', authenticateToken, UserController.getAllStaffAccount);
 
 module.exports = router;

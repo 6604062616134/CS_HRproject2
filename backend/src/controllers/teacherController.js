@@ -39,17 +39,17 @@ const TeacherController = {
             `);
             const latestId = latestIdResult[0]?.latestId || 0; // ถ้าไม่มีค่า ให้เริ่มต้นที่ 0
             const newId = latestId + 1; // เพิ่มค่า t_ID ใหม่
-    
+
             // แฮชพาสเวิร์ดก่อนเพิ่มลงในตาราง admin
             const hashedPassword = await bcrypt.hash(password, 10); // แฮชพาสเวิร์ดด้วย bcrypt
-    
+
             // เพิ่มข้อมูลลงในตาราง teacher
             const sql_params_teacher = [newId, t_name, t_code, t_tel, t_email, t_AcademicRanks];
             await db.query(
                 'INSERT INTO teacher (t_ID, t_name, t_code, t_tel, t_email, t_AcademicRanks) VALUES (?, ?, ?, ?, ?, ?)',
                 sql_params_teacher
             );
-    
+
             // เพิ่มข้อมูลลงในตาราง admin
             const role = 'teacher'; // กำหนด role เป็น teacher
             const createdDate = new Date(); // วันที่สร้าง
@@ -59,7 +59,7 @@ const TeacherController = {
                 'INSERT INTO admin (t_ID, username, password, role, createdDate, modifiedDate) VALUES (?, ?, ?, ?, ?, ?)',
                 sql_params_admin
             );
-    
+
             res.status(201).json({ message: 'Teacher and admin created successfully', t_ID: newId });
         } catch (error) {
             console.error('Error creating teacher and admin:', error);
@@ -86,6 +86,9 @@ const TeacherController = {
     async deleteTeacher(req, res) {
         const teacherId = req.params.id;
         try {
+            // ลบจาก admin ก่อน (ใช้ t_ID)
+            await db.query('DELETE FROM admin WHERE t_ID = ?', [teacherId]);
+            // ลบจาก teacher
             await db.query('DELETE FROM teacher WHERE t_ID = ?', [teacherId]);
             res.status(200).json({ message: 'Teacher deleted successfully' });
         } catch (error) {

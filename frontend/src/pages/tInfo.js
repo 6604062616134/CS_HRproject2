@@ -75,7 +75,9 @@ function TInfo() {
         }
     };
 
-    const handleDelete = async (teacherId) => {
+        const handleDelete = async (teacherId) => {
+        const confirmDelete = window.confirm("ลบข้อมูลอาจารย์ ?");
+        if (!confirmDelete) return;
         try {
             await axios.delete(`http://localhost:8000/teacher/delete/${teacherId}`, {
                 withCredentials: true,
@@ -155,7 +157,7 @@ function TInfo() {
                     <table className="table-auto text-xs min-w-full max-w-xl mx-auto bg-white border border-gray-300 rounded-3xl">
                         <thead>
                             <tr className="bg-gray-200 text-gray-700">
-                                <th className="px-2 py-2 border text-xs text-center w-[3%]">ID</th>
+                                <th className="px-2 py-2 border text-xs text-center w-[3%]">ลำดับ</th>
                                 <th className="px-2 py-2 border text-xs text-center w-[5%]">ตำแหน่งทางวิชาการ</th>
                                 <th className="px-2 py-2 border text-xs text-center w-[20%]">ชื่อ</th>
                                 <th className="px-2 py-2 border text-xs text-center w-[5%]">รหัส</th>
@@ -296,7 +298,7 @@ function TInfo() {
                                 className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
-                        <div className="flex flex-row gap-2">
+                        <div className="flex gap-2">
                             <div className="mb-4 relative">
                                 <label className="block text-sm font-medium text-gray-700">ตำแหน่งทางวิชาการ</label>
                                 <div
@@ -346,7 +348,7 @@ function TInfo() {
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
                             </div>
-                            <div className="flex items-end mb-4 gap-2">
+                            <div className="justify-end gap-2 mt-6">
                                 <button
                                     className="px-4 py-2 text-sm bg-gray-300 rounded-3xl hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                     onClick={() => setIsModalOpen(false)}
@@ -354,7 +356,7 @@ function TInfo() {
                                     ยกเลิก
                                 </button>
                                 <button
-                                    className="px-4 py-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    className="px-4 py-2 ml-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                     onClick={handleSave}
                                 >
                                     บันทึก
@@ -438,7 +440,7 @@ function TInfo() {
                                 <label className="block text-sm font-medium text-gray-700">รหัส</label>
                                 <input
                                     type="text"
-                                    placeholder="กรอกรหัสอาจารย์"
+                                    placeholder="กรอกรหัสอาจารย์ เช่น ADP"
                                     value={newTeacher.t_code}
                                     onChange={(e) => setNewTeacher({ ...newTeacher, t_code: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
@@ -471,7 +473,7 @@ function TInfo() {
                                 <input
                                     type="password"
                                     value={newTeacher.password}
-                                    placeholder="กรอกรหัสผ่านบัญชี"
+                                    placeholder="กรอกรหัสผ่านบัญชีอาจารย์"
                                     onChange={(e) => setNewTeacher({ ...newTeacher, password: e.target.value })}
                                     className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                 />
