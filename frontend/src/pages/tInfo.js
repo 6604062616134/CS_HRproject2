@@ -29,19 +29,37 @@ function TInfo() {
         username: "", // เพิ่มฟิลด์ username
         password: "", // เพิ่มฟิลด์ password
     });
+    const [isAddRankModalOpen, setIsAddRankModalOpen] = useState(false);
+    const [newRank, setNewRank] = useState("");
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
+
+    const fetchTeacherData = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/teacher/', {
+                withCredentials: true,
+            });
+            setTeacherData(response.data);
+        } catch (error) {
+            console.error('Error fetching teacher data:', error);
+        }
+    };
 
     useEffect(() => {
-        const fetchTeacherData = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/teacher/', {
-                    withCredentials: true,
-                });
-                setTeacherData(response.data);
-            } catch (error) {
-                console.error('Error fetching teacher data:', error);
-            }
-        };
-
         fetchTeacherData();
     }, []);
 
@@ -60,22 +78,7 @@ function TInfo() {
         fetchTeacherAccounts();
     }, []);
 
-    const handleChangePassword = async (t_ID, oldPassword, newPassword) => {
-        try {
-            const response = await axios.put(`http://localhost:8000/user/changePassword/${t_ID}`, {
-                oldPassword,
-                newPassword,
-            }, {
-                withCredentials: true,
-            });
-            alert(response.data.message); // แจ้งเตือนเมื่อเปลี่ยนรหัสผ่านสำเร็จ
-        } catch (error) {
-            console.error('Error changing password:', error);
-            alert(error.response?.data?.error || 'Failed to change password');
-        }
-    };
-
-        const handleDelete = async (teacherId) => {
+    const handleDelete = async (teacherId) => {
         const confirmDelete = window.confirm("ลบข้อมูลอาจารย์ ?");
         if (!confirmDelete) return;
         try {
@@ -96,20 +99,48 @@ function TInfo() {
     };
 
     const handleSave = async () => {
+        const oldPwd = passwords[editTeacher.t_ID]?.oldPassword;
+        const newPwd = passwords[editTeacher.t_ID]?.newPassword;
+        if ((oldPwd && !newPwd) || (!oldPwd && newPwd)) {
+            return alert("กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบทั้งสองช่อง");
+        }
+        if (oldPwd && newPwd && oldPwd === newPwd) {
+            return alert("รหัสผ่านใหม่ต้องไม่เหมือนกับรหัสผ่านเดิม");
+        }
         try {
-            await axios.put(`http://localhost:8000/teacher/update/${editTeacher.t_ID}`, editTeacher, {
-                withCredentials: true,
-            });
-            setTeacherData((prevData) =>
-                prevData.map((teacher) =>
-                    teacher.t_ID === editTeacher.t_ID ? editTeacher : teacher
-                )
+            const res = await axios.put(
+                `http://localhost:8000/teacher/update/${editTeacher.t_ID}`,
+                {
+                    t_name: editTeacher.t_name,
+                    username: editTeacher.username,
+                    t_code: editTeacher.t_code,
+                    t_tel: editTeacher.t_tel,
+                    t_email: editTeacher.t_email,
+                    t_AcademicRanks: editTeacher.t_AcademicRanks,
+                    oldPassword: oldPwd || "",
+                    newPassword: newPwd || "",
+                },
+                { withCredentials: true }
             );
+            // ตรวจสอบว่ามี error ใน response หรือไม่
+            if (res.data?.error) {
+                alert(res.data.error);
+                return;
+            }
+            await fetchTeacherData();
             setIsModalOpen(false);
-            alert('อัปเดตข้อมูลสำเร็จ!'); // แจ้งเตือนเมื่ออัปเดตสำเร็จ
+            setPasswords((prev) => ({
+                ...prev,
+                [editTeacher.t_ID]: { oldPassword: "", newPassword: "" }
+            }));
+            alert('อัปเดตข้อมูลสำเร็จ!');
         } catch (error) {
-            console.error('Error updating teacher:', error);
-            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล'); // แจ้งเตือนเมื่อเกิดข้อผิดพลาด
+            if (error.response?.data?.error === "Old password is incorrect") {
+                alert("รหัสผ่านเดิมไม่ถูกต้อง");
+            } else {
+                console.error('Error updating teacher:', error);
+                alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
+            }
         }
     };
 
@@ -140,18 +171,35 @@ function TInfo() {
         }
     };
 
+    const handleAddRank = () => {
+        if (newRank.trim() && !academicRanks.includes(newRank.trim())) {
+            setAcademicRanks((prev) => [...prev, newRank.trim()]);
+            alert("เพิ่มตำแหน่งทางวิชาการสำเร็จ!");
+        }
+        setNewRank("");
+        setIsAddRankModalOpen(false);
+    };
+
     return (
         <div className="flex flex-col h-screen">
             <Navbar className="print:hidden" />
             <div className="flex flex-col p-4 px-20 mt-16 print:mt-0 flex-grow w-full">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">ข้อมูลอาจารย์</h2>
-                    <button
-                        className="px-3 py-1 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                        onClick={() => setIsAddModalOpen(true)}
-                    >
-                        เพิ่มอาจารย์
-                    </button>
+                    <div className="flex gap-2">
+                        <button
+                            className="px-3 py-1 bg-[#000066] text-sm shadow-lg text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                            onClick={() => setIsAddModalOpen(true)}
+                        >
+                            เพิ่มอาจารย์
+                        </button>
+                        <button
+                            className="text-[#000066] underline text-xs bg-transparent rounded-3xl hover:text-blue-800 hover:scale-105 transition-all duration-300 ease-in-out"
+                            onClick={() => setIsAddRankModalOpen(true)}
+                        >
+                            เพิ่มตำแหน่งทางวิชาการ
+                        </button>
+                    </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="table-auto text-xs min-w-full max-w-xl mx-auto bg-white border border-gray-300 rounded-3xl">
@@ -173,7 +221,7 @@ function TInfo() {
                                     const account = teacherAccountData?.find(acc => acc.t_ID === teacher.t_ID) || {};
                                     return (
                                         <tr key={index}>
-                                            <td className="px-2 py-2 border text-xs text-center w-[3%]">{teacher.t_ID}</td>
+                                            <td className="px-2 py-2 border text-xs text-center w-[3%]">{index + 1}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[5%]">{teacher.t_AcademicRanks}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[20%]">{teacher.t_name}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[5%]">{teacher.t_code}</td>
@@ -203,8 +251,14 @@ function TInfo() {
                 </div>
             </div>
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xl">
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    onClick={() => setIsModalOpen(false)}
+                >
+                    <div
+                        className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xl"
+                        onClick={e => e.stopPropagation()}
+                    >
                         <div className="flex justify-between items-center mb-6">
                             <div className="text-md font-semibold">แก้ไขข้อมูลอาจารย์</div>
                             <button
@@ -269,26 +323,6 @@ function TInfo() {
                                 </button>
                             </div>
                         </div>
-                        <div className="flex justify-end space-x-2">
-                            <button
-                                className="px-4 py-2 bg-gray-300 rounded-3xl text-sm hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={() => setIsModalOpen(false)}
-                            >
-                                ยกเลิก
-                            </button>
-                            <button
-                                className="px-4 py-2 bg-[#000066] text-white text-sm rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
-                                onClick={() =>
-                                    handleChangePassword(
-                                        editTeacher.t_ID,
-                                        passwords[editTeacher.t_ID]?.oldPassword || "",
-                                        passwords[editTeacher.t_ID]?.newPassword || ""
-                                    )
-                                }
-                            >
-                                เปลี่ยนรหัสผ่าน
-                            </button>
-                        </div>
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">อีเมล</label>
                             <input
@@ -312,7 +346,7 @@ function TInfo() {
                                 </div>
                                 {isDropdownOpen && (
                                     <div
-                                        className="absolute z-[9999] text-sm mt-2 w-full max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
+                                        className="absolute z-[9999] text-sm mt-2 w-full max-h-32 overflow-y-auto bg-white border rounded-3xl shadow-lg"
                                         style={{ top: '100%' }}
                                     >
                                         <div
@@ -356,7 +390,7 @@ function TInfo() {
                                     ยกเลิก
                                 </button>
                                 <button
-                                    className="px-4 py-2 ml-2 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                    className="px-4 py-2 ml-2 bg-[#000066] shadow-lg text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                     onClick={handleSave}
                                 >
                                     บันทึก
@@ -367,8 +401,14 @@ function TInfo() {
                 </div>
             )}
             {isAddModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-2xl">
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    onClick={() => setIsAddModalOpen(false)}
+                >
+                    <div
+                        className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-2xl"
+                        onClick={e => e.stopPropagation()}
+                    >
                         <div className="font-semibold mb-4 text-md">เพิ่มอาจารย์</div>
                         <div className="flex space-x-4 mb-4">
                             {/* Dropdown สำหรับตำแหน่งทางวิชาการ */}
@@ -492,6 +532,40 @@ function TInfo() {
                                 onClick={handleAddTeacher}
                             >
                                 บันทึก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {isAddRankModalOpen && (
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    onClick={() => setIsAddRankModalOpen(false)}
+                >
+                    <div
+                        className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-sm"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="font-semibold mb-4 text-md">เพิ่มตำแหน่งทางวิชาการ</div>
+                        <input
+                            type="text"
+                            value={newRank}
+                            placeholder="กรอกตำแหน่งทางวิชาการที่ต้องการเพิ่ม(ตัวย่อ)"
+                            onChange={(e) => setNewRank(e.target.value)}
+                            className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                        />
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                className="px-4 py-2 bg-gray-300 rounded-3xl text-sm hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                onClick={() => setIsAddRankModalOpen(false)}
+                            >
+                                ยกเลิก
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-[#000066] text-white text-sm rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                onClick={handleAddRank}
+                            >
+                                เพิ่ม
                             </button>
                         </div>
                     </div>

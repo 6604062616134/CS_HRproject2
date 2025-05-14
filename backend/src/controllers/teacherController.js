@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const TeacherController = {
     async getAllTeachers(req, res) {
         try {
-            const teachers = await db.query('SELECT * FROM teacher');
+            const teachers = await db.query('SELECT * FROM teacher ORDER BY t_name ASC');
             res.json(teachers[0]); // Assuming the first element of the array contains the results
         } catch (error) {
             console.error('Error fetching teachers:', error);
@@ -69,13 +69,54 @@ const TeacherController = {
 
     async updateTeacher(req, res) {
         const teacherId = req.params.id;
-        const { t_name, t_code, t_tel, t_email, t_AcademicRanks } = req.body;
+        const { t_name, t_code, t_tel, t_email, t_AcademicRanks, username, oldPassword, newPassword } = req.body;
         try {
+            // อัปเดตข้อมูลในตาราง teacher
             const sql_params = [t_name, t_code, t_tel, t_email, t_AcademicRanks, teacherId];
-            await db.query(
+            const [result] = await db.query(
                 'UPDATE teacher SET t_name = ?, t_code = ?, t_tel = ?, t_email = ?, t_AcademicRanks = ? WHERE t_ID = ?',
                 sql_params
             );
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'Teacher not found' });
+            }
+
+            // อัปเดต username และ/หรือ password (กรณีเปลี่ยนรหัสผ่านต้องใช้ oldPassword ด้วย)
+            if (username || (oldPassword && newPassword)) {
+                let updateFields = [];
+                let params = [];
+
+                if (username) {
+                    updateFields.push('username = ?');
+                    params.push(username);
+                }
+
+                if (oldPassword && newPassword) {
+                    // ตรวจสอบรหัสผ่านเก่าก่อนอัปเดตรหัสผ่านใหม่
+                    const [rows] = await db.query('SELECT password FROM admin WHERE t_ID = ?', [teacherId]);
+                    if (rows.length === 0) {
+                        return res.status(404).json({ error: 'Admin record not found' });
+                    }
+
+                    const isPasswordValid = await bcrypt.compare(oldPassword, rows[0].password);
+                    if (!isPasswordValid) {
+                        return res.status(400).json({ error: 'Old password is incorrect' });
+                    }
+
+                    const hashedPassword = await bcrypt.hash(newPassword, 10);
+                    updateFields.push('password = ?');
+                    params.push(hashedPassword);
+                }
+
+                if (updateFields.length > 0) {
+                    params.push(teacherId);
+                    await db.query(
+                        `UPDATE admin SET ${updateFields.join(', ')} WHERE t_ID = ?`,
+                        params
+                    );
+                }
+            }
+
             res.status(200).json({ message: 'Teacher updated successfully' });
         } catch (error) {
             console.error('Error updating teacher:', error);

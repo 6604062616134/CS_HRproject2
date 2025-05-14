@@ -4,8 +4,10 @@ const bcrypt = require('bcryptjs');
 const StaffController = {
     async getAllStaff(req, res) {
         try {
-            const [rows] = await db.query('SELECT * FROM staff');
-            res.json(rows); // Assuming the first element of the array contains the results
+            const [rows] = await db.query(
+                "SELECT * FROM staff ORDER BY TRIM(SUBSTRING_INDEX(s_name, ' ', -2)) COLLATE utf8mb4_thai_520_w2 ASC"
+            );
+            res.json(rows);
         } catch (error) {
             console.error('Error fetching staff:', error);
             res.status(500).json({ error: 'Internal server error' });
@@ -114,7 +116,6 @@ const StaffController = {
             res.status(500).json({ error: 'Internal server error' });
         }
     },
-
 
     async deleteStaff(req, res) {
         const staffId = req.params.id;

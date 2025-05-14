@@ -16,6 +16,22 @@ function SInfo() {
         username: "",
         password: "",
     });
+    axios.defaults.withCredentials = true;
+
+    axios.interceptors.response.use(
+        response => response,
+        error => {
+            if (error.response && error.response.status === 401) {
+                // ป้องกันการ alert ซ้ำ
+                if (!window.sessionExpiredHandled) {
+                    window.sessionExpiredHandled = true;
+                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+                    window.location.href = '/';
+                }
+            }
+            return Promise.reject(error);
+        }
+    );
 
     useEffect(() => {
         const fetchStaffData = async () => {
@@ -86,21 +102,32 @@ function SInfo() {
     };
 
     const handleSave = async () => {
-        // เช็กว่ากรอกรหัสผ่านใหม่แต่ไม่ได้กรอกรหัสผ่านเดิม
-        if (passwords[editStaff.s_ID]?.newPassword && !passwords[editStaff.s_ID]?.oldPassword) {
-            return alert("กรุณากรอกรหัสผ่านเดิมเพื่อเปลี่ยนรหัสผ่านใหม่");
+        const oldPwd = passwords[editStaff.s_ID]?.oldPassword;
+        const newPwd = passwords[editStaff.s_ID]?.newPassword;
+        // เช็กว่ากรอกช่องรหัสผ่านเดิมหรือใหม่แค่ช่องเดียว
+        if ((oldPwd && !newPwd) || (!oldPwd && newPwd)) {
+            return alert("กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบทั้งสองช่อง");
+        }
+        // เช็กว่ารหัสผ่านใหม่เหมือนรหัสผ่านเดิม
+        if (oldPwd && newPwd && oldPwd === newPwd) {
+            return alert("รหัสผ่านใหม่ต้องไม่เหมือนกับรหัสผ่านเดิม");
         }
         try {
-            await axios.put(
+            const res = await axios.put(
                 `http://localhost:8000/staff/update/${editStaff.s_ID}`,
                 {
                     s_name: editStaff.s_name,
                     username: editStaff.username,
-                    oldPassword: passwords[editStaff.s_ID]?.oldPassword || "",
-                    newPassword: passwords[editStaff.s_ID]?.newPassword || "",
+                    oldPassword: oldPwd || "",
+                    newPassword: newPwd || "",
                 },
                 { withCredentials: true }
             );
+            // ตรวจสอบว่ามี error ใน response หรือไม่
+            if (res.data?.error) {
+                alert(res.data.error);
+                return;
+            }
             setStaffData((prevData) =>
                 prevData.map((staff) =>
                     staff.s_ID === editStaff.s_ID ? { ...staff, ...editStaff } : staff
@@ -113,8 +140,12 @@ function SInfo() {
             }));
             alert('อัปเดตข้อมูลสำเร็จ!');
         } catch (error) {
-            console.error('Error updating staff:', error);
-            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
+            if (error.response?.data?.error === "Old password is incorrect") {
+                alert("รหัสผ่านเดิมไม่ถูกต้อง");
+            } else {
+                console.error('Error updating staff:', error);
+                alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
+            }
         }
     };
 
@@ -147,7 +178,7 @@ function SInfo() {
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">ข้อมูลเจ้าหน้าที่</h2>
                     <button
-                        className="px-3 py-1 bg-[#000066] text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                        className="px-3 py-1 bg-[#000066] shadow-lg text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                         onClick={() => setIsAddModalOpen(true)}
                     >
                         เพิ่มเจ้าหน้าที่
@@ -169,7 +200,7 @@ function SInfo() {
                                     const account = staffAccountData?.find(acc => acc.s_ID === staff.s_ID) || {};
                                     return (
                                         <tr key={index}>
-                                            <td className="px-2 py-2 border text-xs text-center w-[3%]">{staff.s_ID}</td>
+                                            <td className="px-2 py-2 border text-xs text-center w-[3%]">{index + 1}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[5%]">{staff.s_name}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[10%] print:hidden">{account.username || '-'}</td>
                                             <td className="px-2 py-2 border text-xs text-center w-[5%] print:hidden">
@@ -195,8 +226,8 @@ function SInfo() {
                 </div>
             </div>
             {isModalOpen && editStaff && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xl">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={() => setIsModalOpen(false)}>
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xl" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-6">
                             <div className="text-md font-semibold">แก้ไขข้อมูลเจ้าหน้าที่</div>
                             <button
@@ -290,7 +321,7 @@ function SInfo() {
                                 ยกเลิก
                             </button>
                             <button
-                                className="px-4 py-2 bg-[#000066] text-white text-sm rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
+                                className="px-4 py-2 bg-[#000066] shadow-lg text-white text-sm rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                                 onClick={handleSave}
                             >
                                 บันทึก
@@ -300,8 +331,8 @@ function SInfo() {
                 </div>
             )}
             {isAddModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-lg">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={() => setIsAddModalOpen(false)}>
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-lg" onClick={e => e.stopPropagation()}>
                         <div className="font-semibold mb-4 text-md">เพิ่มเจ้าหน้าที่</div>
                         <div className="flex space-x-4 mb-4">
                             <div className="w-full">
