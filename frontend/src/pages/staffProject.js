@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import NavbarStaffProject from "../components/navbar-Staffproject";
 import axios from 'axios';
 
@@ -11,6 +11,9 @@ function StaffProject() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // สำหรับเปิด/ปิดดรอปดาวน์
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์
     const [role, setRole] = useState(''); // เก็บข้อมูล role ของผู้ใช้
+    const [yearOptions, setYearOptions] = useState([]);
+    const [isAddYearModalOpen, setIsAddYearModalOpen] = useState(false);
+    const [newYear, setNewYear] = useState('');
 
     axios.defaults.withCredentials = true;
 
@@ -28,6 +31,19 @@ function StaffProject() {
             return Promise.reject(error);
         }
     );
+
+    useEffect(() => {
+        // โหลดปีการศึกษาทั้งหมดจาก backend เมื่อ component mount
+        const fetchSemesters = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/user/getAllSemester');
+                setYearOptions(response.data.map(item => item.semester));
+            } catch (error) {
+                console.error('Error fetching semesters:', error);
+            }
+        };
+        fetchSemesters();
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -102,6 +118,29 @@ function StaffProject() {
         }
     };
 
+    const handleAddYear = async (e) => {
+        e.preventDefault();
+        if (!newYear.trim()) {
+            alert('กรุณากรอกปีการศึกษา');
+            return;
+        }
+        try {
+            await axios.post('http://localhost:8000/user/createsemester', { semester: newYear.trim() }, { withCredentials: true });
+            alert('เพิ่มปีการศึกษาสำเร็จ');
+            // โหลดปีการศึกษาทั้งหมดใหม่
+            const response = await axios.get('http://localhost:8000/user/getAllsemester', { withCredentials: true });
+            setYearOptions(response.data.map(item => item.semester));
+            setNewYear('');
+            setIsAddYearModalOpen(false);
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                alert('ปีการศึกษานี้มีอยู่แล้ว');
+            } else {
+                alert('เกิดข้อผิดพลาดในการเพิ่มปีการศึกษา');
+            }
+        }
+    };
+
     const filteredData = data.filter((item) => {
         const search = searchTerm.toLowerCase();
         const yearMatch = searchTermYear ? item.year === searchTermYear : true; // กรองตามปีการศึกษา
@@ -135,46 +174,55 @@ function StaffProject() {
                             className="w-full px-4 py-2 border text-xs rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
                         />
                     </div>
-                    <div className="relative" ref={dropdownRef}>
-                        <div
-                            className="px-4 print:hidden py-2 border rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-xs hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        >
-                            {searchTermYear || 'เลือกเทอม'}
-                            <span className={`ml-2 transform transition-transform duration-300 ease-in-out ${isDropdownOpen ? 'rotate-180' : ''}`}>
-                                ▼
-                            </span>
-                        </div>
-                        {isDropdownOpen && (
+                    <div className="flex items-center gap-4">
+                        <div className="relative" ref={dropdownRef}>
                             <div
-                                className="absolute z-[9999] mt-2 text-xs w-64 max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
-                                style={{ top: '100%' }}
+                                className="px-4 py-2 border rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-xs hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
+                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             >
-                                {/* ตัวเลือกค่าว่าง */}
+                                {searchTermYear || 'เลือกปีการศึกษา'}
+                                <span className={`ml-2 transform transition-transform duration-300 ease-in-out ${isDropdownOpen ? 'rotate-180' : ''}`}>
+                                    ▼
+                                </span>
+                            </div>
+                            {isDropdownOpen && (
                                 <div
-                                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
-                                    onClick={() => {
-                                        setSearchTermYear(''); // ตั้งค่าเป็นค่าว่าง
-                                        setIsDropdownOpen(false);
-                                    }}
+                                    className="absolute z-[9999] mt-2 w-64 max-h-64 overflow-y-auto bg-white border rounded-3xl"
+                                    style={{ top: '100%' }}
                                 >
-                                    -
-                                </div>
-                                {/* ตัวเลือกเทอม */}
-                                {['1/2566', '2/2566', '1/2567', '2/2567', '1/2568', '2/2568', '1/2569', '2/2569', '1/2570', '2/2570'].map((term) => (
+                                    {/* ตัวเลือกค่าว่าง */}
                                     <div
-                                        key={term}
                                         className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
                                         onClick={() => {
-                                            setSearchTermYear(term);
+                                            setSearchTermYear('');
                                             setIsDropdownOpen(false);
                                         }}
                                     >
-                                        {term}
+                                        -
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                    {/* ตัวเลือกปีการศึกษาจาก state */}
+                                    {yearOptions.map((term) => (
+                                        <div
+                                            key={term}
+                                            className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
+                                            onClick={() => {
+                                                setSearchTermYear(term);
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            {term}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            className="text-xs text-blue-600 underline hover:text-green-600"
+                            onClick={() => setIsAddYearModalOpen(true)}
+                        >
+                            เพิ่มปีการศึกษา
+                        </button>
                     </div>
                 </div>
             </div>
@@ -449,6 +497,44 @@ function StaffProject() {
                                     onClick={handleSaveEdit}
                                 >
                                     บันทึก
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {isAddYearModalOpen && (
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+                    onClick={() => setIsAddYearModalOpen(false)}
+                >
+                    <div
+                        className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xs"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <h3 className="font-semibold mb-4 text-md">เพิ่มปีการศึกษา</h3>
+                        <form onSubmit={handleAddYear}>
+                            <input
+                                type="text"
+                                value={newYear}
+                                onChange={e => setNewYear(e.target.value)}
+                                className="w-full px-4 py-2 border rounded-3xl mb-4 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                placeholder="เช่น 1/2571"
+                                required
+                            />
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:text-white transition"
+                                    onClick={() => setIsAddYearModalOpen(false)}
+                                >
+                                    ยกเลิก
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 transition"
+                                >
+                                    เพิ่ม
                                 </button>
                             </div>
                         </form>

@@ -2,6 +2,7 @@ const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { getAllTeachers } = require('./teacherController');
+const { get } = require('../routes/userRoute');
 
 const UserController = {
     async login(req, res) {
@@ -195,34 +196,69 @@ const UserController = {
         try {
             const { t_ID } = req.params;
             const { oldPassword, newPassword } = req.body;
-    
+
             if (!oldPassword || !newPassword) {
                 return res.status(400).json({ error: 'Old password and new password are required' });
             }
-    
+
             // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
             const [rows] = await db.query('SELECT password FROM admin WHERE t_ID = ?', [t_ID]);
             if (rows.length === 0) {
                 return res.status(404).json({ error: 'User not found' });
             }
-    
+
             const user = rows[0];
-    
+
             // ตรวจสอบรหัสผ่านเดิม
             const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
             if (!isPasswordValid) {
                 return res.status(401).json({ error: 'Old password is incorrect' });
             }
-    
+
             // แฮชรหัสผ่านใหม่
             const hashedPassword = await bcrypt.hash(newPassword, 10);
-    
+
             // อัปเดตรหัสผ่านใหม่ในฐานข้อมูล
             await db.query('UPDATE admin SET password = ? WHERE admin_ID = ?', [hashedPassword, t_ID]);
-    
+
             res.status(200).json({ message: 'Password updated successfully' });
         } catch (error) {
             console.error('Error changing password:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async createSemester(req, res) {
+        try {
+            const { semester } = req.body;
+            if (!semester || !semester.trim()) {
+                return res.status(400).json({ error: 'กรุณาระบุปีการศึกษา' });
+            }
+
+            // ตรวจสอบว่ามี semester นี้อยู่แล้วหรือยัง
+            const [existRows] = await db.query('SELECT * FROM semester WHERE semester = ?', [semester.trim()]);
+            if (existRows.length > 0) {
+                return res.status(409).json({ error: 'ปีการศึกษานี้มีอยู่แล้ว' });
+            }
+
+            // เพิ่มข้อมูลลงตาราง semester
+            await db.query('INSERT INTO semester (semester) VALUES (?)', [semester.trim()]);
+            res.status(201).json({ message: 'เพิ่มปีการศึกษาสำเร็จ' });
+        } catch (error) {
+            console.error('Error creating semester:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async getAllSemesters(req, res) {
+        try {
+            const [rows] = await db.query('SELECT * FROM semester');
+            if (rows.length === 0) {
+                return res.status(404).json({ error: 'No semesters found' });
+            }
+            res.status(200).json(rows); // ส่งข้อมูลปีการศึกษาทั้งหมดกลับไป
+        } catch (error) {
+            console.error('Error fetching all semesters:', error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }

@@ -172,7 +172,11 @@ function TInfo() {
     };
 
     const handleAddRank = () => {
-        if (newRank.trim() && !academicRanks.includes(newRank.trim())) {
+        if (!newRank.trim()) {
+            alert("กรุณากรอกตำแหน่งทางวิชาการ");
+            return;
+        }
+        if (!academicRanks.includes(newRank.trim())) {
             setAcademicRanks((prev) => [...prev, newRank.trim()]);
             alert("เพิ่มตำแหน่งทางวิชาการสำเร็จ!");
         }
