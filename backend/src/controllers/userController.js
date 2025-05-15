@@ -270,7 +270,71 @@ const UserController = {
             console.error('Error deleting semester:', error);
             res.status(500).json({ error: 'Internal server error', status: 'error' });
         }
-    }
+    },
+
+    async getAllReport(req, res) {
+        try {
+            // ดึงข้อมูล report ทั้งหมด พร้อมชื่อผู้ส่ง (teacher หรือ staff)
+            const [rows] = await db.query(`
+                SELECT r.r_ID, r.reportMessage, r.t_ID, r.s_ID, 
+                    t.t_name AS teacherName, s.s_name AS staffName
+                FROM report r
+                LEFT JOIN teacher t ON r.t_ID = t.t_ID
+                LEFT JOIN staff s ON r.s_ID = s.s_ID
+            `);
+            res.status(200).json(rows);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async createReport(req, res) {
+        try {
+            const { reportMessage, t_ID, s_ID } = req.body;
+            if (!reportMessage || (!t_ID && !s_ID)) {
+                return res.status(400).json({ error: 'reportMessage และ t_ID หรือ s_ID จำเป็นต้องระบุ' });
+            }
+            await db.query(
+                'INSERT INTO report (reportMessage, t_ID, s_ID) VALUES (?, ?, ?)',
+                [reportMessage, t_ID || null, s_ID || null]
+            );
+            res.status(201).json({ message: 'สร้าง report สำเร็จ' });
+        } catch (error) {
+            console.error('Error creating report:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async updateReport(req, res) {
+        try {
+            const { r_ID } = req.params;
+            const { reportMessage } = req.body;
+            if (!reportMessage) {
+                return res.status(400).json({ error: 'reportMessage จำเป็นต้องระบุ' });
+            }
+            await db.query(
+                'UPDATE report SET reportMessage = ? WHERE r_ID = ?',
+                [reportMessage, r_ID]
+            );
+            res.status(200).json({ message: 'อัปเดต report สำเร็จ' });
+        } catch (error) {
+            console.error('Error updating report:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async deleteReport(req, res) {
+        try {
+            const { r_ID } = req.params;
+            await db.query('DELETE FROM report WHERE r_ID = ?', [r_ID]);
+            res.status(200).json({ message: 'ลบ report สำเร็จ' });
+        } catch (error) {
+            console.error('Error deleting report:', error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+    // ...existing code...
 };
 
 module.exports = UserController;

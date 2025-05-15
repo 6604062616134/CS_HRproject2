@@ -494,6 +494,13 @@ function NavbarStaffProject() {
                             >
                                 ข้อมูลเจ้าหน้าที่
                             </NavLink>
+                            <NavLink
+                                to="/report"
+                                className="block py-2 px-4 text-white hover:bg-white hover:text-black rounded-3xl"
+                                onClick={handleToggle}
+                            >
+                                รายงานจากผู้ใช้
+                            </NavLink>
                         </div>
                     )}
                     <hr className="my-4 border-t border-1 border-gray-300 w-64 mx-auto" />

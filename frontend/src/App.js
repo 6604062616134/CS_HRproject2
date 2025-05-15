@@ -7,8 +7,9 @@ import Detail from './pages/detail';
 import StaffProject from './pages/staffProject';
 import Login from './pages/login';
 import Admin from './pages/admin';
-import TInfo from './pages/tInfo';
-import SInfo from './pages/sInfo';
+import TInfo from './pages/teacher-info';
+import SInfo from './pages/staff-info';
+import Report from './pages/admin-report';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/staffProject" element={<StaffProject />} />
           <Route path="/tInfo" element={<TInfo />} />
           <Route path="/sInfo" element={<SInfo />} />
+          <Route path="/report" element={<Report />} />
         </Routes>
       </div >
     </BrowserRouter>
