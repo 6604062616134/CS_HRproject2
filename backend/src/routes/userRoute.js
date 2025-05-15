@@ -15,6 +15,7 @@ router.put('/updateUser/:id', authenticateToken, UserController.updateUser);
 router.put('/changePassword/:t_ID', authenticateToken, UserController.changePassword);
 
 router.delete('/deleteUser/:id', authenticateToken, UserController.deleteUser);
+router.delete('/deleteSemester/:y_ID', authenticateToken, UserController.deleteSemester);
 
 router.get('/getUser', authenticateToken, UserController.getUser);
 router.get('/getAllUser', authenticateToken, UserController.getAllUsers);

@@ -1,8 +1,6 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getAllTeachers } = require('./teacherController');
-const { get } = require('../routes/userRoute');
 
 const UserController = {
     async login(req, res) {
@@ -260,6 +258,17 @@ const UserController = {
         } catch (error) {
             console.error('Error fetching all semesters:', error);
             res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+
+    async deleteSemester(req, res) {
+        try {
+            const { y_ID } = req.params;
+            await db.query('DELETE FROM semester WHERE y_ID = ?', [y_ID]);
+            res.status(200).json({ message: 'Semester deleted', status: 'success' });
+        } catch (error) {
+            console.error('Error deleting semester:', error);
+            res.status(500).json({ error: 'Internal server error', status: 'error' });
         }
     }
 };

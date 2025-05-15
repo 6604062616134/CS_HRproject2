@@ -14,6 +14,8 @@ function StaffProject() {
     const [yearOptions, setYearOptions] = useState([]);
     const [isAddYearModalOpen, setIsAddYearModalOpen] = useState(false);
     const [newYear, setNewYear] = useState('');
+    const [isDeleteDropdownOpen, setIsDeleteDropdownOpen] = useState(false);
+    const [selectedSemester, setSelectedSemester] = useState(null);
 
     axios.defaults.withCredentials = true;
 
@@ -33,11 +35,13 @@ function StaffProject() {
     );
 
     useEffect(() => {
-        // โหลดปีการศึกษาทั้งหมดจาก backend เมื่อ component mount
         const fetchSemesters = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/user/getAllSemester');
-                setYearOptions(response.data.map(item => item.semester));
+                setYearOptions(response.data.map(item => ({
+                    id: item.y_ID,
+                    semester: item.semester
+                })));
             } catch (error) {
                 console.error('Error fetching semesters:', error);
             }
@@ -128,8 +132,11 @@ function StaffProject() {
             await axios.post('http://localhost:8000/user/createsemester', { semester: newYear.trim() }, { withCredentials: true });
             alert('เพิ่มปีการศึกษาสำเร็จ');
             // โหลดปีการศึกษาทั้งหมดใหม่
-            const response = await axios.get('http://localhost:8000/user/getAllsemester', { withCredentials: true });
-            setYearOptions(response.data.map(item => item.semester));
+            const response = await axios.get('http://localhost:8000/user/getAllSemester', { withCredentials: true });
+            setYearOptions(response.data.map(item => ({
+                id: item.y_ID,
+                semester: item.semester
+            })));
             setNewYear('');
             setIsAddYearModalOpen(false);
         } catch (error) {
@@ -138,6 +145,28 @@ function StaffProject() {
             } else {
                 alert('เกิดข้อผิดพลาดในการเพิ่มปีการศึกษา');
             }
+        }
+    };
+
+    const handleDeleteYear = async () => {
+        if (!selectedSemester) return;
+        const selectedTerm = yearOptions.find(t => String(t.id) === String(selectedSemester));
+        const confirmDelete = window.confirm(
+            `ต้องการลบปีการศึกษา "${selectedTerm?.semester || ''}" หรือไม่?`
+        );
+        if (!confirmDelete) return;
+        try {
+            await axios.delete(`http://localhost:8000/user/deleteSemester/${selectedSemester}`, { withCredentials: true });
+            alert('ลบปีการศึกษาสำเร็จ');
+            const response = await axios.get('http://localhost:8000/user/getAllSemester', { withCredentials: true });
+            setYearOptions(response.data.map(item => ({
+                id: item.y_ID,
+                semester: item.semester
+            })));
+            setSelectedSemester(null);
+            setIsDeleteDropdownOpen(false);
+        } catch (error) {
+            alert('เกิดข้อผิดพลาดในการลบปีการศึกษา');
         }
     };
 
@@ -203,14 +232,14 @@ function StaffProject() {
                                     {/* ตัวเลือกปีการศึกษาจาก state */}
                                     {yearOptions.map((term) => (
                                         <div
-                                            key={term}
+                                            key={term.id}
                                             className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-gray-700"
                                             onClick={() => {
-                                                setSearchTermYear(term);
+                                                setSearchTermYear(term.semester);
                                                 setIsDropdownOpen(false);
                                             }}
                                         >
-                                            {term}
+                                            {term.semester}
                                         </div>
                                     ))}
                                 </div>
@@ -509,35 +538,92 @@ function StaffProject() {
                     onClick={() => setIsAddYearModalOpen(false)}
                 >
                     <div
-                        className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-xs"
+                        className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in"
                         onClick={e => e.stopPropagation()}
                     >
-                        <h3 className="font-semibold mb-4 text-md">เพิ่มปีการศึกษา</h3>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                            เพิ่มปีการศึกษา
+                        </h3>
                         <form onSubmit={handleAddYear}>
                             <input
                                 type="text"
                                 value={newYear}
                                 onChange={e => setNewYear(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl mb-4 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-3xl mb-4 focus:outline-none focus:ring-2 focus:ring-[#000066] transition"
                                 placeholder="เช่น 1/2571"
                                 required
                             />
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-2 mb-4">
                                 <button
                                     type="button"
-                                    className="px-4 py-2 bg-gray-300 rounded-3xl hover:bg-red-600 hover:text-white transition"
+                                    className="px-4 py-2 text-sm bg-gray-200 text-gray-700 rounded-3xl hover:bg-red-500 hover:text-white transition"
                                     onClick={() => setIsAddYearModalOpen(false)}
                                 >
                                     ยกเลิก
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#000066] text-white rounded-3xl hover:bg-green-600 transition"
+                                    className="px-4 py-2 text-sm bg-[#000066] text-white rounded-3xl hover:bg-green-600 transition"
                                 >
                                     เพิ่ม
                                 </button>
                             </div>
                         </form>
+                        <hr className="my-4" />
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                ลบปีการศึกษา
+                            </label>
+                            <div className="flex gap-2">
+                                <div className="relative flex-1" ref={dropdownRef}>
+                                    <div
+                                        className="px-4 py-2 border rounded-3xl bg-white cursor-pointer focus:outline-none z-50 text-sm hover:bg-gray-100 hover:text-blue-600 transition-all duration-300 ease-in-out flex items-center justify-between"
+                                        onClick={() => setIsDeleteDropdownOpen(!isDeleteDropdownOpen)}
+                                    >
+                                        {yearOptions.find(y => y.id === selectedSemester)?.semester || 'เลือกปีการศึกษาที่ต้องการลบ'}
+                                        <span className={`ml-2 transform transition-transform duration-300 ease-in-out ${isDeleteDropdownOpen ? 'rotate-180' : ''}`}>
+                                            ▼
+                                        </span>
+                                    </div>
+                                    {isDeleteDropdownOpen && (
+                                        <div
+                                            className="absolute z-[9999] mt-2 w-full max-h-48 overflow-y-auto bg-white border rounded-3xl shadow-lg"
+                                            style={{ top: '100%' }}
+                                        >
+                                            <div
+                                                className="px-4 py-2 text-gray-500 hover:bg-gray-100 cursor-pointer text-sm transition-all duration-300 ease-in-out"
+                                                onClick={() => {
+                                                    setSelectedSemester(null);
+                                                    setIsDeleteDropdownOpen(false);
+                                                }}
+                                            >
+                                                - ไม่มีปีการศึกษา -
+                                            </div>
+                                            {yearOptions.map((term) => (
+                                                <div
+                                                    key={term.id}
+                                                    className="px-4 py-2 hover:bg-blue-50 hover:text-blue-700 cursor-pointer text-sm text-gray-700 transition-all duration-300 ease-in-out"
+                                                    onClick={() => {
+                                                        setSelectedSemester(term.id);
+                                                        setIsDeleteDropdownOpen(false);
+                                                    }}
+                                                >
+                                                    {term.semester}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 text-sm bg-red-500 text-white rounded-3xl hover:bg-red-700 transition"
+                                    disabled={!selectedSemester}
+                                    onClick={handleDeleteYear}
+                                >
+                                    ลบ
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
