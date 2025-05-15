@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/navbar';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from "react-datepicker";
+import th from "date-fns/locale/th";
 
 function Assign() {
     const [eventName, setEventName] = useState('');
@@ -21,6 +25,7 @@ function Assign() {
     const dropdownStaffRef = useRef(null); // สำหรับดรอปดาวน์เจ้าหน้าที่
     const navigate = useNavigate();
     axios.defaults.withCredentials = true;
+    registerLocale("th", th);
 
     axios.interceptors.response.use(
         response => response,
@@ -36,6 +41,22 @@ function Assign() {
             return Promise.reject(error);
         }
     );
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false); // ปิดดรอปดาวน์อาจารย์
+            }
+            if (dropdownStaffRef.current && !dropdownStaffRef.current.contains(event.target)) {
+                setIsDropdownStaffOpen(false); // ปิดดรอปดาวน์เจ้าหน้าที่
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchTeachers = async () => {
@@ -110,6 +131,12 @@ function Assign() {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    };
 
     const createAssignation = async () => {
         try {
@@ -222,37 +249,55 @@ function Assign() {
                                 required
                             />
                         </div>
-
-                        <div className="flex gap-4">
+                        <div className="flex gap-2">
                             <div className="flex-1">
                                 <label className="block mb-1 text-sm text-gray-600">วันที่เริ่มต้น</label>
-                                <input
-                                    type="date"
-                                    value={eventDateStart}
-                                    onChange={(e) => setEventDateStart(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                <DatePicker
+                                    selected={eventDateStart ? new Date(eventDateStart) : null}
+                                    onChange={(date) =>
+                                        setEventDateStart(date ? date.toISOString().split("T")[0] : "")
+                                    }
+                                    dateFormat="dd/MM/yy"
+                                    locale="th"
+                                    customInput={
+                                        <button
+                                            type="button"
+                                            className="w-full px-6 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        >
+                                            {eventDateStart ? formatDate(eventDateStart) : "เลือกวันที่"}
+                                        </button>
+                                    }
                                 />
                             </div>
                             <div className="flex-1">
                                 <label className="block mb-1 text-sm text-gray-600">วันที่สิ้นสุด</label>
-                                <input
-                                    type="date"
-                                    value={eventDateEnd}
-                                    onChange={(e) => setEventDateEnd(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                <DatePicker
+                                    selected={eventDateEnd ? new Date(eventDateEnd) : null}
+                                    onChange={(date) =>
+                                        setEventDateEnd(date ? date.toISOString().split("T")[0] : "")
+                                    }
+                                    dateFormat="dd/MM/yy"
+                                    locale="th"
+                                    customInput={
+                                        <button
+                                            type="button"
+                                            className="w-full px-6 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        >
+                                            {eventDateEnd ? formatDate(eventDateEnd) : "เลือกวันที่"}
+                                        </button>
+                                    }
                                 />
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm text-gray-600">เลขคำสั่ง</label>
-                            <input
-                                type="text"
-                                value={number}
-                                onChange={(e) => setNumber(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                placeholder="เลขคำสั่ง"
-                            />
+                            <div>
+                                <label className="block mb-1 text-sm text-gray-600">เลขคำสั่ง</label>
+                                <input
+                                    type="text"
+                                    value={number}
+                                    onChange={(e) => setNumber(e.target.value)}
+                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                    placeholder="เลขคำสั่ง"
+                                />
+                            </div>
                         </div>
 
                         <div>
@@ -271,7 +316,7 @@ function Assign() {
                             <textarea
                                 value={detail}
                                 onChange={(e) => setDetail(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-40 resize-none"
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-60 resize-none"
                                 placeholder="รายละเอียดงาน"
                                 required
                             />
@@ -297,6 +342,26 @@ function Assign() {
                                             className="absolute z-[9999] mt-2 w-64 max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
                                             style={{ top: '100%' }}
                                         >
+                                            {/* Select All Option */}
+                                            <div className="flex items-center px-4 py-2 hover:bg-gray-50 border-b">
+                                                <input
+                                                    type="checkbox"
+                                                    id="teacher-select-all"
+                                                    checked={selectedTeachers.length === teachers.length && teachers.length > 0}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setSelectedTeachers(teachers);
+                                                        } else {
+                                                            setSelectedTeachers([]);
+                                                        }
+                                                    }}
+                                                    className="mr-2"
+                                                />
+                                                <label htmlFor="teacher-select-all" className="text-sm text-gray-700 font-semibold">
+                                                    เลือกทั้งหมด
+                                                </label>
+                                            </div>
+                                            {/* รายการอาจารย์ */}
                                             {teachers.map((teacher) => (
                                                 <div key={teacher.t_ID} className="flex items-center px-4 py-2 hover:bg-gray-50">
                                                     <input
@@ -330,6 +395,26 @@ function Assign() {
                                             className="absolute z-[9999] mt-2 w-64 max-h-64 overflow-y-auto bg-white border rounded-3xl shadow-lg"
                                             style={{ top: '100%' }}
                                         >
+                                            {/* Select All Option */}
+                                            <div className="flex items-center px-4 py-2 hover:bg-gray-50 border-b">
+                                                <input
+                                                    type="checkbox"
+                                                    id="staff-select-all"
+                                                    checked={selectedStaff.length === staff.length && staff.length > 0}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setSelectedStaff(staff);
+                                                        } else {
+                                                            setSelectedStaff([]);
+                                                        }
+                                                    }}
+                                                    className="mr-2"
+                                                />
+                                                <label htmlFor="staff-select-all" className="text-sm text-gray-700 font-semibold">
+                                                    เลือกทั้งหมด
+                                                </label>
+                                            </div>
+                                            {/* รายการเจ้าหน้าที่ */}
                                             {staff.map((staffMember) => (
                                                 <div key={staffMember.s_ID} className="flex items-center px-4 py-2 hover:bg-gray-50">
                                                     <input
@@ -356,7 +441,7 @@ function Assign() {
                                     รีเซ็ตรายการที่เลือก
                                 </button>
                             </div>
-                            <div className="max-h-[400px] overflow-y-auto pb-10">
+                            <div className="max-h-[320px] overflow-y-auto pb-2">
                                 {selectedTeachers.length > 0 || selectedStaff.length > 0 ? (
                                     <>
                                         {/* แสดงรายชื่ออาจารย์ที่เลือก */}
@@ -387,7 +472,7 @@ function Assign() {
                             </div>
                         </div>
                         <div>
-                            <label className="block mb-1 text-sm text-gray-600">แนบลิงก์</label>
+                            <label className="block mb-1 text-sm text-gray-600">แนบลิงก์ (ถ้ามี)</label>
                             <textarea
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
