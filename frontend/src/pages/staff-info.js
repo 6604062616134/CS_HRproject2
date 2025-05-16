@@ -11,6 +11,7 @@ function SInfo() {
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
     const [newStaff, setNewStaff] = useState({
         s_name: "",
         username: "",
@@ -171,12 +172,32 @@ function SInfo() {
         }
     };
 
+    const filteredStaffData = staffData
+        ? staffData.filter((staff) => {
+            const account = staffAccountData?.find(acc => acc.s_ID === staff.s_ID) || {};
+            const search = searchTerm.trim().toLowerCase();
+            return (
+                staff.s_name?.toLowerCase().includes(search) ||
+                account.username?.toLowerCase().includes(search)
+            );
+        })
+        : [];
+
     return (
         <div className="flex flex-col h-screen">
             <Navbar className="print:hidden" />
             <div className="flex flex-col p-4 px-20 mt-16 print:mt-0 flex-grow w-full">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">ข้อมูลเจ้าหน้าที่</h2>
+                    <div className="flex flex-row gap-4">
+                        <h2 className="text-xl font-semibold">ข้อมูลเจ้าหน้าที่</h2>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            placeholder="ค้นหาชื่อหรือ username"
+                            className="px-4 py-2 border rounded-3xl text-xs focus:outline-none focus:ring-2 focus:ring-[#000066] w-80 mr-2"
+                        />
+                    </div>
                     <button
                         className="px-3 py-1 bg-[#000066] shadow-lg text-sm text-white rounded-3xl hover:bg-green-600 hover:scale-105 transition-all duration-300 ease-in-out"
                         onClick={() => setIsAddModalOpen(true)}
@@ -195,8 +216,8 @@ function SInfo() {
                             </tr>
                         </thead>
                         <tbody>
-                            {staffData && staffData.length > 0 ? (
-                                staffData.map((staff, index) => {
+                            {filteredStaffData && filteredStaffData.length > 0 ? (
+                                filteredStaffData.map((staff, index) => {
                                     const account = staffAccountData?.find(acc => acc.s_ID === staff.s_ID) || {};
                                     return (
                                         <tr key={index}>

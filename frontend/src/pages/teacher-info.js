@@ -244,8 +244,8 @@ function TInfo() {
                             </tr>
                         </thead>
                         <tbody>
-                            {teacherData && teacherData.length > 0 ? (
-                                teacherData.map((teacher, index) => {
+                            {filteredTeacherData && filteredTeacherData.length > 0 ? (
+                                filteredTeacherData.map((teacher, index) => {
                                     const account = teacherAccountData?.find(acc => acc.t_ID === teacher.t_ID) || {};
                                     return (
                                         <tr key={index}>
