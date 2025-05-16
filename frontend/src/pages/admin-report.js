@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Navbar from '../components/navbar';
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import th from "date-fns/locale/th";
+registerLocale("th", th);
 
 function AdminReport() {
     const [reports, setReports] = useState([]);
@@ -42,10 +46,10 @@ function AdminReport() {
             roleFilter === 'all'
                 ? true
                 : roleFilter === 'teacher'
-                ? !!item.t_ID
-                : roleFilter === 'staff'
-                ? !!item.s_ID
-                : true;
+                    ? !!item.t_ID
+                    : roleFilter === 'staff'
+                        ? !!item.s_ID
+                        : true;
         // ถ้ามีการกรอกวันที่ ให้เปรียบเทียบเฉพาะวันที่ (yyyy-mm-dd)
         const matchDate = searchDate
             ? item.created && new Date(item.created).toISOString().slice(0, 10) === searchDate
@@ -59,6 +63,12 @@ function AdminReport() {
         { value: 'teacher', label: 'teacher' },
         { value: 'staff', label: 'staff' }
     ];
+
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    };
 
     return (
         <div className="flex flex-col h-screen">
@@ -104,12 +114,19 @@ function AdminReport() {
                         )}
                     </div>
                     {/* ค้นหาจากวันที่ส่ง */}
-                    <input
-                        type="date"
-                        value={searchDate}
-                        onChange={e => setSearchDate(e.target.value)}
-                        className="px-4 py-2 border rounded-3xl text-xs focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                        placeholder="ค้นหาวันที่ส่ง"
+                    <DatePicker
+                        selected={searchDate ? new Date(searchDate) : null}
+                        onChange={date => setSearchDate(date ? date.toISOString().split("T")[0] : "")}
+                        dateFormat="dd/MM/yy"
+                        locale="th"
+                        customInput={
+                            <button
+                                type="button"
+                                className="px-4 py-2 border rounded-3xl text-xs bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066] min-w-[130px]"
+                            >
+                                {searchDate ? formatDate(searchDate) : "ค้นหาวันที่ส่ง"}
+                            </button>
+                        }
                     />
                 </div>
                 <div className="overflow-x-auto flex-grow w-full">
