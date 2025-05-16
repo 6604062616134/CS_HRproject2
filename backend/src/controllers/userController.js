@@ -276,8 +276,8 @@ const UserController = {
         try {
             // ดึงข้อมูล report ทั้งหมด พร้อมชื่อผู้ส่ง (teacher หรือ staff)
             const [rows] = await db.query(`
-                SELECT r.r_ID, r.reportMessage, r.t_ID, r.s_ID, 
-                    t.t_name AS teacherName, s.s_name AS staffName
+                SELECT r.r_ID, r.reportMessage, r.t_ID, r.s_ID, r.created, 
+                    t.t_name AS teacherName, s.s_name AS staffName, t.t_AcademicRanks as academicRanks
                 FROM report r
                 LEFT JOIN teacher t ON r.t_ID = t.t_ID
                 LEFT JOIN staff s ON r.s_ID = s.s_ID
@@ -295,9 +295,10 @@ const UserController = {
             if (!reportMessage || (!t_ID && !s_ID)) {
                 return res.status(400).json({ error: 'reportMessage และ t_ID หรือ s_ID จำเป็นต้องระบุ' });
             }
+            const now = new Date();
             await db.query(
-                'INSERT INTO report (reportMessage, t_ID, s_ID) VALUES (?, ?, ?)',
-                [reportMessage, t_ID || null, s_ID || null]
+                'INSERT INTO report (reportMessage, t_ID, s_ID, created, modified) VALUES (?, ?, ?, ?, ?)',
+                [reportMessage, t_ID || null, s_ID || null, now, now]
             );
             res.status(201).json({ message: 'สร้าง report สำเร็จ' });
         } catch (error) {
@@ -313,9 +314,10 @@ const UserController = {
             if (!reportMessage) {
                 return res.status(400).json({ error: 'reportMessage จำเป็นต้องระบุ' });
             }
+            const modified = new Date();
             await db.query(
-                'UPDATE report SET reportMessage = ? WHERE r_ID = ?',
-                [reportMessage, r_ID]
+                'UPDATE report SET reportMessage = ?, modified = ? WHERE r_ID = ?',
+                [reportMessage, modified, r_ID]
             );
             res.status(200).json({ message: 'อัปเดต report สำเร็จ' });
         } catch (error) {
@@ -334,7 +336,7 @@ const UserController = {
             res.status(500).json({ error: 'Internal server error' });
         }
     },
-    // ...existing code...
+
 };
 
 module.exports = UserController;
