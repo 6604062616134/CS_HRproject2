@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import th from "date-fns/locale/th";
 
 function NavbarProject({ fetchData }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,6 +33,7 @@ function NavbarProject({ fetchData }) {
         grade: '',
         note: '',
     });
+    registerLocale("th", th);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -179,6 +183,12 @@ function NavbarProject({ fetchData }) {
         setIsModalOpen((prev) => !prev);
     };
 
+    const formatDate = (dateStr) => {
+        if (!dateStr) return '';
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    };
+
     return (
         <div>
             <nav className="bg-[#000066] p-4 fixed top-0 left-0 w-full z-50 print:hidden">
@@ -220,42 +230,58 @@ function NavbarProject({ fetchData }) {
             </nav>
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-[800px]">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleModalToggle}>
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-[800px]" onClick={e => e.stopPropagation()}>
                         <div className="text-md font-bold mb-4 no-print">เพิ่มข้อมูลนักศึกษา</div>
                         <form onSubmit={handleSubmit}>
                             <div className="flex flex-wrap gap-4">
-                                <div className="flex-1 min-w-[150px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">วันที่สอบ</label>
-                                    <input
-                                        type="date"
-                                        name="datetime"
-                                        value={formData.datetime}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-[150px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 1</label>
-                                    <input
-                                        type="text"
-                                        name="studentCode1"
-                                        value={formData.studentCode1}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                        placeholder="รหัสนักศึกษา 1"
-                                    />
-                                </div>
-                                <div className="flex-1 min-w-[150px]">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 2</label>
-                                    <input
-                                        type="text"
-                                        name="studentCode2"
-                                        value={formData.studentCode2}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                        placeholder="รหัสนักศึกษา 2"
-                                    />
+                                <div className="flex gap-4">
+                                    <div className="flex-1 max-w-1/2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">วันที่สอบ</label>
+                                        <DatePicker
+                                            selected={formData.datetime ? new Date(formData.datetime) : null}
+                                            onChange={date =>
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    datetime: date ? date.toISOString().split("T")[0] : ""
+                                                }))
+                                            }
+                                            dateFormat="dd/MM/yy"
+                                            locale="th"
+                                            customInput={
+                                                <button
+                                                    type="button"
+                                                    className="w-full px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                                >
+                                                    {formData.datetime
+                                                        ? new Date(formData.datetime).toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' })
+                                                        : "เลือกวันที่"}
+                                                </button>
+                                            }
+                                        />
+                                    </div>
+                                    <div className="flex-1 min-w-[310px]">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 1</label>
+                                        <input
+                                            type="text"
+                                            name="studentCode1"
+                                            value={formData.studentCode1}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            placeholder="รหัสนักศึกษา 1"
+                                        />
+                                    </div>
+                                    <div className="flex-1 min-w-[310px]">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">รหัสนักศึกษา 2</label>
+                                        <input
+                                            type="text"
+                                            name="studentCode2"
+                                            value={formData.studentCode2}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            placeholder="รหัสนักศึกษา 2"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex-[2] min-w-[300px]">
                                     <label className="block text-sm font-medium text-gray-700 mb-1">ปริญญานิพนธ์เรื่อง (ไทย)</label>

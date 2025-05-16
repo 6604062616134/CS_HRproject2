@@ -238,8 +238,8 @@ function NavbarStaffProject() {
             </nav>
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-6 rounded-3xl shadow-lg w-[90%] max-w-[800px] overflow-auto">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleModalToggle}>
+                    <div className="bg-white p-6 rounded-3xl shadow-lg w-[90%] max-w-[800px] overflow-auto" onClick={e => e.stopPropagation()}>
                         <h2 className="text-lg font-bold mb-4 no-print">เพิ่มข้อมูลโปรเจค</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="flex flex-wrap gap-4">
