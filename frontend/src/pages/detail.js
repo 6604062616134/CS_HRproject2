@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/navbar";
+import NavbarPersonal from "../components/navbar-personal";
 
-function Detail({ type }) {
-    const { id } = useParams();
+function Detail({ type: propType }) {
+    const params = useParams();
+    const navigate = useNavigate();
     const [personDetail, setPersonDetail] = useState(null);
     const [assignations, setAssignations] = useState([]);
     const [startDate, setStartDate] = useState('');
@@ -17,7 +19,8 @@ function Detail({ type }) {
     const [currentAssignation, setCurrentAssignation] = useState(null);
     const [useTodayAsEndDate, setUseTodayAsEndDate] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const [role, setRole] = useState(''); // State for user role
+    const [role, setRole] = useState(null);
+    const [tID, setTID] = useState(null);
     const [editData, setEditData] = useState({
         a_number: '',
         docName: '',
@@ -28,73 +31,68 @@ function Detail({ type }) {
     });
     axios.defaults.withCredentials = true;
 
-    axios.interceptors.response.use(
-        response => response,
-        error => {
-            if (error.response && error.response.status === 401) {
-                // ป้องกันการ alert ซ้ำ
-                if (!window.sessionExpiredHandled) {
-                    window.sessionExpiredHandled = true;
-                    alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-                    window.location.href = '/';
-                }
-            }
-            return Promise.reject(error);
-        }
-    );
-
+    // ดึง role และ t_ID
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/user/getUser', {
                     withCredentials: true,
                 });
-                setRole(response.data.role); // ตั้งค่า role จาก API
+                setRole(response.data.role);
+                setTID(response.data.t_ID || null);
+
+                // ถ้าเป็น teacher และ path ไม่ตรง ให้ redirect
+                if (
+                    response.data.role === "teacher" &&
+                    (!params.id || params.id !== String(response.data.t_ID) || propType !== "teacher")
+                ) {
+                    navigate(`/detail/teacher/${response.data.t_ID}`, { replace: true });
+                }
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         };
-
         fetchUserRole();
+        // eslint-disable-next-line
     }, []);
 
+    // ถ้าไม่ใช่ teacher หรือ path ถูกต้องแล้ว ให้แสดงข้อมูล
+    const type = role === "teacher" ? "teacher" : propType;
+    const id = role === "teacher" && tID ? tID : params.id;
+
     useEffect(() => {
+        if (!id || !type) return;
         const fetchDetail = async () => {
             try {
                 const endpoint = type === 'teacher'
                     ? `http://localhost:8000/teacher/${id}`
                     : `http://localhost:8000/staff/${id}`;
                 const response = await axios.get(endpoint, {
-                    withCredentials: true, // เพิ่มการตั้งค่านี้
+                    withCredentials: true,
                 });
                 setPersonDetail(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         };
-
         fetchDetail();
     }, [id, type]);
 
     useEffect(() => {
+        if (!id || !type) return;
         const fetchAssignations = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/assignation/${id}`, {
                     params: { type },
-                    withCredentials: true, // เพิ่มการตั้งค่านี้
+                    withCredentials: true,
                 });
                 setAssignations(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
             }
         };
-
         fetchAssignations();
     }, [id, type]);
-
-    if (!personDetail) {
-        return <div>Loading...</div>;
-    }
 
     const filteredAssignations = assignations.filter((assignation) => {
         const eventStart = new Date(assignation.eventDateStart);
@@ -206,17 +204,27 @@ function Detail({ type }) {
         }
     };
 
+    const NavbarComponent = role === "teacher" ? NavbarPersonal : Navbar;
+
     return (
         <div>
-            <Navbar className="print:hidden" />
+            <NavbarComponent className="print:hidden" />
             <div className="container mt-10 px-12 pt-8 pb-8">
                 <div className="flex flex-row gap-4">
                     {type === 'teacher' ? (
-                        <p className="text-lg font-semibold mt-6 text-left">
-                            {personDetail.t_AcademicRanks} {personDetail.t_name} <strong>{personDetail.t_code}</strong>
-                        </p>
+                        personDetail ? (
+                            <p className="text-lg font-semibold mt-6 text-left">
+                                {personDetail.t_AcademicRanks} {personDetail.t_name} <strong>{personDetail.t_code}</strong>
+                            </p>
+                        ) : (
+                            <p className="text-lg font-semibold mt-6 text-left text-gray-400">กำลังโหลดข้อมูลอาจารย์...</p>
+                        )
                     ) : (
-                        <p className="text-lg font-semibold mt-6 text-left">{personDetail.s_name}</p>
+                        personDetail ? (
+                            <p className="text-lg font-semibold mt-6 text-left">{personDetail.s_name}</p>
+                        ) : (
+                            <p className="text-lg font-semibold mt-6 text-left text-gray-400">กำลังโหลดข้อมูลเจ้าหน้าที่...</p>
+                        )
                     )}
                     <div className="flex flex-wrap items-center gap-4 pt-2">
                         <div>
@@ -312,10 +320,16 @@ function Detail({ type }) {
                                         return (
                                             <tr key={`${assignation.a_number}-${index}`} className="text-center">
                                                 <td className="border border-gray-300 px-4 py-2 text-xs">{index + 1}</td>
-                                                <td className="border border-gray-300 px-4 py-2 text-xs">{assignation.a_number}</td>
-                                                <td className="border border-gray-300 px-4 py-2 text-xs">{assignation.docName}</td>
-                                                <td className="border border-gray-300 px-4 py-2 text-xs">{assignation.eventName}</td>
-                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[200px] text-left text-xs">{assignation.detail}</td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">{assignation.a_number}</td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">
+                                                    {assignation.docName}
+                                                </td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[180px] text-xs">
+                                                    {assignation.eventName}
+                                                </td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[200px] text-left text-xs">
+                                                    {assignation.detail}
+                                                </td>
                                                 <td className="border border-gray-300 px-4 py-2 text-xs">
                                                     {assignation.eventDateStart ? formatDate(assignation.eventDateStart) : '-'}
                                                 </td>

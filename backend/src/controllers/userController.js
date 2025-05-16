@@ -106,11 +106,12 @@ const UserController = {
     async getUser(req, res) {
         try {
             const { admin_ID } = req.user; // ใช้ข้อมูลจาก JWT Token
-            const [rows] = await db.query('SELECT username, role FROM admin WHERE admin_ID = ?', [admin_ID]);
+            // เพิ่ม t_ID, s_ID ใน select
+            const [rows] = await db.query('SELECT username, role, t_ID, s_ID FROM admin WHERE admin_ID = ?', [admin_ID]);
             if (rows.length === 0) {
                 return res.status(404).json({ error: 'User not found' });
             }
-            res.status(200).json(rows[0]); // ส่งข้อมูลของผู้ใช้ที่ล็อกอินอยู่กลับไป
+            res.status(200).json(rows[0]);
         } catch (error) {
             console.error('Error fetching user:', error);
             res.status(500).json({ error: 'Internal server error' });
