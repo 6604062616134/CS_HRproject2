@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import NavbarProject from '../components/navbar-project';
+import NavbarPersonal from "../components/navbar-personal";
 
 function Project() {
     const [students, setStudents] = useState([]);
@@ -173,9 +174,11 @@ function Project() {
         }
     };
 
+    const NavbarComponent = role === "staff" ? NavbarPersonal : NavbarProject;
+
     return (
         <div className="flex flex-col h-screen">
-            <NavbarProject fetchData={fetchData} className="print:hidden" />
+            <NavbarComponent className="print:hidden" />
             <div className="flex flex-col p-4 mt-16 print:mt-0 flex-grow w-full">
                 <div className="flex flex-row gap-4 mb-4">
                     <h2 className="text-xl font-semibold text-gray-800">รายชื่อนักศึกษาที่เข้าสอบโปรเจค</h2>
@@ -229,13 +232,15 @@ function Project() {
                                     </div>
                                 )}
                             </div>
-                            <button
-                                type="button"
-                                className="text-xs text-blue-600 underline hover:text-green-600"
-                                onClick={() => setIsAddYearModalOpen(true)}
-                            >
-                                แก้ไขปีการศึกษา
-                            </button>
+                            {role !== 'teacher' && role !== 'staff' && (
+                                <button
+                                    type="button"
+                                    className="text-xs text-blue-600 underline hover:text-green-600"
+                                    onClick={() => setIsAddYearModalOpen(true)}
+                                >
+                                    แก้ไขปีการศึกษา
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -256,7 +261,9 @@ function Project() {
                                 <th className="px-4 py-2 border text-xs max-w-[22px] min-w-[22px] rotate break-words whitespace-normal">ห้องสอบ</th>
                                 <th className="px-4 py-2 border text-xs max-w-[10px] min-w-[10px] rotate break-words whitespace-normal">เกรดที่ได้</th>
                                 <th className="px-4 py-2 border text-xs max-w-[18px] min-w-[18px] rotate break-words whitespace-normal">หมายเหตุ</th>
-                                <th className="px-4 py-2 border text-xs print:hidden max-w-[20px] min-w-[20px] break-words whitespace-normal">แก้ไข</th>
+                                {role !== 'staff' && (
+                                    <th className="px-4 py-2 border text-xs print:hidden max-w-[20px] min-w-[20px] break-words whitespace-normal">แก้ไข</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -300,16 +307,18 @@ function Project() {
                                         <td className="px-2 py-2 border text-xs text-center max-w-[22px] min-w-[22px] break-words whitespace-normal">{student.room}</td>
                                         <td className="px-2 py-2 border text-xs text-center max-w-[10px] min-w-[10px] break-words whitespace-normal">{student.grade}</td>
                                         <td className="px-2 py-2 border text-xs text-center max-w-[18px] min-w-[18px] break-words whitespace-normal">{student.note}</td>
-                                        <td className="px-2 py-2 border text-xs text-center print:hidden max-w-[0px] min-w-[20px] break-words whitespace-normal">
-                                            {role === 'superadmin' && (
-                                                <button
-                                                    className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
-                                                    onClick={() => handleEditModalOpen(student)}
-                                                >
-                                                    แก้ไข
-                                                </button>
-                                            )}
-                                        </td>
+                                        {role !== 'staff' && (
+                                            <td className="px-2 py-2 border text-xs text-center print:hidden max-w-[0px] min-w-[20px]">
+                                                {role === 'superadmin' && (
+                                                    <button
+                                                        className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
+                                                        onClick={() => handleEditModalOpen(student)}
+                                                    >
+                                                        แก้ไข
+                                                    </button>
+                                                )}
+                                            </td>
+                                        )}
                                     </tr>
                                 ))
                             ) : (

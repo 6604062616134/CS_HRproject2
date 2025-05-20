@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import NavbarStaffProject from "../components/navbar-Staffproject";
+import NavbarPersonal from "../components/navbar-personal";
 import axios from 'axios';
 
 function StaffProject() {
@@ -188,9 +189,11 @@ function StaffProject() {
         );
     });
 
+    const NavbarComponent = role === "staff" ? NavbarPersonal : NavbarStaffProject;
+
     return (
         <div className="container mx-auto w-full px-4 py-20">
-            <NavbarStaffProject className="print:hidden" />
+            <NavbarComponent className="print:hidden" />
             <div className="flex items-center gap-4 mb-4">
                 <h1 className="text-xl ml-8 font-bold">ตารางการตรวจโปรเจคสำหรับเจ้าหน้าที่</h1>
                 <div className="flex items-center gap-4">
@@ -245,13 +248,15 @@ function StaffProject() {
                                 </div>
                             )}
                         </div>
-                        <button
-                            type="button"
-                            className="text-xs text-blue-600 underline hover:text-green-600"
-                            onClick={() => setIsAddYearModalOpen(true)}
-                        >
-                            เพิ่มปีการศึกษา
-                        </button>
+                        {role !== 'staff' && (
+                            <button
+                                type="button"
+                                className="text-xs text-blue-600 underline hover:text-green-600"
+                                onClick={() => setIsAddYearModalOpen(true)}
+                            >
+                                แก้ไขปีการศึกษา
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -270,7 +275,10 @@ function StaffProject() {
                                 <th className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">เจ้าหน้าที่</th>
                                 <th className="px-2 py-2 border text-xs min-w-[90px] max-w-[120px] break-words whitespace-normal">สถานะการตรวจ</th>
                                 <th className="px-2 py-2 border text-xs min-w-[80px] max-w-[120px] break-words whitespace-normal">หมายเหตุ</th>
-                                <th className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">แก้ไข</th>
+                                {/* เฉพาะถ้าไม่ใช่ staff เท่านั้น */}
+                                {role !== 'staff' && (
+                                    <th className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">แก้ไข</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -300,21 +308,24 @@ function StaffProject() {
                                         <td className="px-2 py-2 border text-xs min-w-[80px] max-w-[120px] break-words whitespace-normal">
                                             {item.note || '-'}
                                         </td>
-                                        <td className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">
-                                            {role === 'superadmin' && (
-                                                <button
-                                                    className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
-                                                    onClick={() => handleEditClick(item)}
-                                                >
-                                                    แก้ไข
-                                                </button>
-                                            )}
-                                        </td>
+                                        {/* เฉพาะถ้าไม่ใช่ staff เท่านั้น */}
+                                        {role !== 'staff' && (
+                                            <td className="px-2 py-2 border text-xs print:hidden min-w-[60px] max-w-[80px] break-words whitespace-normal">
+                                                {role === 'superadmin' && (
+                                                    <button
+                                                        className="px-2 py-1 bg-[#000066] text-white rounded-3xl z-50 hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300"
+                                                        onClick={() => handleEditClick(item)}
+                                                    >
+                                                        แก้ไข
+                                                    </button>
+                                                )}
+                                            </td>
+                                        )}
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="10" className="px-4 py-2 border text-center text-xs text-gray-500">
+                                    <td colSpan={role !== 'staff' ? 10 : 9} className="px-4 py-2 border text-center text-xs text-gray-500">
                                         ไม่พบข้อมูล
                                     </td>
                                 </tr>

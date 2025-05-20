@@ -15,7 +15,7 @@ const UserController = {
             const [rows] = await db.query('SELECT * FROM admin WHERE username = ?', [username]);
 
             if (rows.length === 0) {
-                return res.status(401).json({ error: 'Invalid username or password' });
+                return res.status(401).json({ error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
             }
 
             const user = rows[0];
@@ -29,7 +29,7 @@ const UserController = {
             const isPasswordValid = await bcrypt.compare(password, user.password);
 
             if (!isPasswordValid) {
-                return res.status(401).json({ error: 'Invalid username or password' });
+                return res.status(401).json({ error: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
             }
 
             // สร้าง JWT Token
@@ -47,11 +47,18 @@ const UserController = {
 
             // ส่ง Token กลับไปใน Cookie
             res.cookie('auth_token', token, { httpOnly: true, secure: false, sameSite: 'lax' });
-            return res.status(200).json({ message: 'Login successful', role: user.role });
+            return res.status(200).json({ message: 'Login successful', role: user.role, t_ID: user.t_ID, s_ID: user.s_ID });
 
         } catch (error) {
             console.error('Error during login:', error);
-            return res.status(500).json({ error: 'Internal server error' });
+            const msg = error.response?.data?.error;
+            if (msg === 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง') {
+                alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+            } else if (msg === 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่') {
+                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+            } else {
+                alert(msg || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+            }
         }
     },
 
@@ -180,7 +187,7 @@ const UserController = {
 
     async getAllStaffAccount(req, res) {
         try {
-            const [rows] = await db.query('SELECT * FROM admin WHERE role = ?', ['staff']);
+            const [rows] = await db.query('SELECT * FROM admin WHERE role = ? OR role = ?', ['staff', 'superadmin']);
             if (rows.length === 0) {
                 return res.status(404).json({ error: 'No staff accounts found' });
             }

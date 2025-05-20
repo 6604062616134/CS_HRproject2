@@ -12,20 +12,23 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async (event) => {
-        event.preventDefault(); // ป้องกันการรีเฟรชหน้าเว็บ
+        event.preventDefault();
         try {
             const response = await axios.post('http://localhost:8000/user/login', {
                 username,
                 password,
             }, { withCredentials: true });
-    
+
             if (response.data.role?.toLowerCase() === 'superadmin') {
-                console.log('Superadmin login successful');
-                navigate('/assign'); // ใช้ navigate แทน window.location.href
-            } else {
-                console.log('Admin login successful');
-                navigate('/project'); // ใช้ navigate แทน window.location.href
+                navigate('/assign');
+            } else if (response.data.role?.toLowerCase() === 'teacher') {
+                // redirect ไปหน้า detail/teacher/:t_ID
+                navigate(`/detail/teacher/${response.data.t_ID}`);
+            } else if (response.data.role?.toLowerCase() === 'staff') {
+                // redirect ไปหน้า detail/student/:s_ID
+                navigate(`/detail/staff/${response.data.s_ID}`);
             }
+
         } catch (error) {
             console.error('Error during login:', error);
             alert(error.response?.data?.error || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');

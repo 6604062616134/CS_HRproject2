@@ -64,21 +64,6 @@ function SInfo() {
         fetchStaffAccounts();
     }, []);
 
-    // const handleChangePassword = async (s_ID, oldPassword, newPassword) => {
-    //     try {
-    //         const response = await axios.put(`http://localhost:8000/user/changePassword/${s_ID}`, {
-    //             oldPassword,
-    //             newPassword,
-    //         }, {
-    //             withCredentials: true,
-    //         });
-    //         alert(response.data.message);
-    //     } catch (error) {
-    //         console.error('Error changing password:', error);
-    //         alert(error.response?.data?.error || 'Failed to change password');
-    //     }
-    // };
-
     const handleDelete = async (staffId) => {
         const confirmDelete = window.confirm("ลบข้อมูลเจ้าหน้าที่ ?");
         if (!confirmDelete) return;

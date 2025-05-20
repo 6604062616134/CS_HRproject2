@@ -204,7 +204,7 @@ function Detail({ type: propType }) {
         }
     };
 
-    const NavbarComponent = role === "teacher" ? NavbarPersonal : Navbar;
+    const NavbarComponent = (role === "teacher" || role === "staff") ? NavbarPersonal : Navbar;
 
     return (
         <div>
@@ -296,7 +296,9 @@ function Detail({ type: propType }) {
                                 </th>
                                 <th className="border border-gray-300 px-4 py-2 text-xs w-12">วันที่สิ้นสุด</th>
                                 <th className="border border-gray-300 px-4 py-2 text-xs w-12 print:hidden">ลิงค์ไฟล์</th>
-                                <th className="border border-gray-300 px-4 py-2 w-8 text-xs print:hidden">แก้ไข</th>
+                                {role !== 'staff' && role !== 'teacher' && (
+                                    <th className="border border-gray-300 px-4 py-2 w-8 text-xs print:hidden">แก้ไข</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
@@ -350,16 +352,18 @@ function Detail({ type: propType }) {
                                                         <span className="text-gray-500">-</span>
                                                     )}
                                                 </td>
-                                                <td className="border border-gray-300 px-2 py-1 text-xs print:hidden">
-                                                    {role === 'superadmin' && (
-                                                        <button
-                                                            className="px-2 py-1 bg-[#000066] text-white rounded-3xl hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300 text-xs"
-                                                            onClick={() => handleEdit(assignation)}
-                                                        >
-                                                            แก้ไข
-                                                        </button>
-                                                    )}
-                                                </td>
+                                                {role !== 'staff' && role !== 'teacher' && (
+                                                    <td className="border border-gray-300 px-2 py-1 text-xs print:hidden">
+                                                        {role === 'superadmin' && (
+                                                            <button
+                                                                className="px-2 py-1 bg-[#000066] text-white rounded-3xl hover:scale-105 hover:bg-white hover:text-black shadow-lg transition-transform duration-300 text-xs"
+                                                                onClick={() => handleEdit(assignation)}
+                                                            >
+                                                                แก้ไข
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                )}
 
                                             </tr>
                                         );
