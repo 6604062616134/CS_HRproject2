@@ -8,7 +8,6 @@ function TInfo() {
     const [editTeacher, setEditTeacher] = useState(null);
     const [passwords, setPasswords] = useState({});
     const [teacherAccountData, setTeacherAccountData] = useState(null);
-    const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);

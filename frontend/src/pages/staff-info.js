@@ -8,7 +8,6 @@ function SInfo() {
     const [editStaff, setEditStaff] = useState(null);
     const [passwords, setPasswords] = useState({});
     const [staffAccountData, setStaffAccountData] = useState(null);
-    const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
