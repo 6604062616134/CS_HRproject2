@@ -67,7 +67,7 @@ const TeacherController = {
         }
     },
 
-        async updateTeacher(req, res) {
+    async updateTeacher(req, res) {
         const teacherId = req.params.id;
         const { t_name, t_code, t_tel, t_email, t_AcademicRanks, username, newPassword } = req.body;
         try {
@@ -80,22 +80,22 @@ const TeacherController = {
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: 'Teacher not found' });
             }
-    
+
             // อัปเดต username และ/หรือ password (ไม่ต้องเช็ครหัสผ่านเดิม)
             let updateFields = [];
             let params = [];
-    
+
             if (username) {
                 updateFields.push('username = ?');
                 params.push(username);
             }
-    
+
             if (newPassword) {
                 const hashedPassword = await bcrypt.hash(newPassword, 10);
                 updateFields.push('password = ?');
                 params.push(hashedPassword);
             }
-    
+
             if (updateFields.length > 0) {
                 params.push(teacherId);
                 await db.query(
@@ -103,7 +103,7 @@ const TeacherController = {
                     params
                 );
             }
-    
+
             res.status(200).json({ message: 'Teacher updated successfully' });
         } catch (error) {
             console.error('Error updating teacher:', error);

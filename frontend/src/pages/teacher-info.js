@@ -547,7 +547,43 @@ function TInfo() {
                         className="bg-white p-6 rounded-3xl shadow-lg w-full max-w-sm"
                         onClick={e => e.stopPropagation()}
                     >
-                        <div className="font-semibold mb-4 text-md">เพิ่มตำแหน่งทางวิชาการ</div>
+                        <div className="font-semibold mb-4 text-md">แก้ไข/เพิ่มตำแหน่งทางวิชาการ</div>
+                        {/* แสดงรายการตำแหน่งที่มีอยู่ พร้อมแก้ไข/ลบ */}
+                        <label className="block text-sm font-medium text-gray-700 mb-2">แก้ไข/ลบ</label>
+                        <ul
+                            className="mb-4"
+                            style={{
+                                maxHeight: "200px", // ปรับความสูงตามต้องการ
+                                overflowY: "auto",
+                                paddingRight: "4px"
+                            }}
+                        >
+                            {academicRanks.map((rank, idx) => (
+                                <li key={rank} className="flex items-center mb-2">
+                                    <input
+                                        type="text"
+                                        value={rank}
+                                        onChange={e => {
+                                            const updated = [...academicRanks];
+                                            updated[idx] = e.target.value;
+                                            setAcademicRanks(updated);
+                                        }}
+                                        className="border rounded-3xl px-3 py-1 mr-2 w-full focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                    />
+                                    <button
+                                        className="ml-2 px-2 py-1 text-xs text-red-600 underline bg-transparent rounded-3xl hover:text-red-800 transition-all duration-200"
+                                        onClick={() => {
+                                            setAcademicRanks(academicRanks.filter((_, i) => i !== idx));
+                                        }}
+                                        disabled={academicRanks.length <= 1}
+                                        title={academicRanks.length <= 1 ? "ต้องมีอย่างน้อย 1 ตำแหน่ง" : "ลบ"}
+                                    >
+                                        ลบ
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">เพิ่มตำแหน่ง</label>
                         <input
                             type="text"
                             value={newRank}
