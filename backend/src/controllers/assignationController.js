@@ -24,7 +24,8 @@ const AssignationController = {
                 eventName,
                 selectedTeachers = [],
                 selectedStaff = [],
-                link
+                link,
+                createdDoc
             } = req.body;
 
             let teacherIds = [];
@@ -45,7 +46,7 @@ const AssignationController = {
             }
 
             // Insert into assignation table พร้อมเก็บ t_ID และ s_ID ในรูปแบบ JSON
-            const insertAssignationQuery = `INSERT INTO assignation (a_number, createdDate, modifiedDate, detail, docName, eventDateStart, eventDateEnd, eventName, t_ID, s_ID, linkFile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            const insertAssignationQuery = `INSERT INTO assignation (a_number, createdDate, modifiedDate, detail, docName, eventDateStart, eventDateEnd, eventName, createdDoc, t_ID, s_ID, linkFile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
             const assignationValues = [
                 a_number,
                 createdDate,
@@ -55,8 +56,9 @@ const AssignationController = {
                 eventDateStart,
                 eventDateEnd,
                 eventName,
-                JSON.stringify(teacherIds), // แปลง t_ID เป็น JSON ก่อนเก็บในฐานข้อมูล
-                JSON.stringify(staffIds),  // แปลง s_ID เป็น JSON ก่อนเก็บในฐานข้อมูล
+                createdDoc, // <<== ตรงกับคอลัมน์ createdDoc
+                JSON.stringify(teacherIds),
+                JSON.stringify(staffIds),
                 link
             ];
             await db.query(insertAssignationQuery, assignationValues);
@@ -142,23 +144,23 @@ const AssignationController = {
         try {
             const a_ID = req.params.id; // รับ a_ID จาก URL
             const fields = req.body;
-    
+
             // ตรวจสอบและลบฟิลด์ที่ไม่ตรงกับฐานข้อมูล
             const allowedFields = ['a_number', 'docName', 'eventName', 'detail', 'eventDateStart', 'eventDateEnd'];
             const keys = Object.keys(fields).filter((key) => allowedFields.includes(key));
-    
+
             if (keys.length === 0) {
                 return res.status(400).json({ error: 'No valid fields provided for update' });
             }
-    
+
             const setClause = keys.map((key) => `${key} = ?`).join(', ');
             const values = keys.map((key) => fields[key]);
-    
+
             values.push(a_ID); // เพิ่ม a_ID เป็นค่าพารามิเตอร์สุดท้าย
-    
+
             const query = `UPDATE assignation SET ${setClause} WHERE a_ID = ?`;
             await db.query(query, values);
-    
+
             res.status(200).json({ message: 'Assignation updated successfully' });
         } catch (error) {
             console.error('Error updating assignation:', error);

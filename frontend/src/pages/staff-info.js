@@ -88,23 +88,13 @@ function SInfo() {
     };
 
     const handleSave = async () => {
-        const oldPwd = passwords[editStaff.s_ID]?.oldPassword;
         const newPwd = passwords[editStaff.s_ID]?.newPassword;
-        // เช็กว่ากรอกช่องรหัสผ่านเดิมหรือใหม่แค่ช่องเดียว
-        if ((oldPwd && !newPwd) || (!oldPwd && newPwd)) {
-            return alert("กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบทั้งสองช่อง");
-        }
-        // เช็กว่ารหัสผ่านใหม่เหมือนรหัสผ่านเดิม
-        if (oldPwd && newPwd && oldPwd === newPwd) {
-            return alert("รหัสผ่านใหม่ต้องไม่เหมือนกับรหัสผ่านเดิม");
-        }
         try {
             const res = await axios.put(
                 `http://localhost:8000/staff/update/${editStaff.s_ID}`,
                 {
                     s_name: editStaff.s_name,
                     username: editStaff.username,
-                    oldPassword: oldPwd || "",
                     newPassword: newPwd || "",
                 },
                 { withCredentials: true }
@@ -122,16 +112,12 @@ function SInfo() {
             setIsModalOpen(false);
             setPasswords((prev) => ({
                 ...prev,
-                [editStaff.s_ID]: { oldPassword: "", newPassword: "" }
+                [editStaff.s_ID]: { newPassword: "" }
             }));
             alert('อัปเดตข้อมูลสำเร็จ!');
         } catch (error) {
-            if (error.response?.data?.error === "Old password is incorrect") {
-                alert("รหัสผ่านเดิมไม่ถูกต้อง");
-            } else {
-                console.error('Error updating staff:', error);
-                alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
-            }
+            console.error('Error updating staff:', error);
+            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
         }
     };
 
@@ -243,35 +229,16 @@ function SInfo() {
                                 ลบเจ้าหน้าที่
                             </button>
                         </div>
-
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">รหัสผ่านเดิม</label>
-                            <div className="relative">
-                                <input
-                                    type={showOldPassword ? "text" : "password"}
-                                    value={passwords[editStaff.s_ID]?.oldPassword || ""}
-                                    placeholder="กรอกรหัสผ่านเดิม"
-                                    onChange={(e) =>
-                                        setPasswords((prev) => ({
-                                            ...prev,
-                                            [editStaff.s_ID]: {
-                                                ...prev[editStaff.s_ID],
-                                                oldPassword: e.target.value,
-                                            },
-                                        }))
-                                    }
-                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowOldPassword(!showOldPassword)}
-                                    className="absolute inset-y-0 right-3 flex items-center text-sm text-blue-500 hover:text-blue-700"
-                                >
-                                    {showOldPassword ? "ซ่อน" : "แสดง"}
-                                </button>
-                            </div>
+                            <label className="block text-sm font-medium text-gray-700">Username</label>
+                            <input
+                                type="text"
+                                value={editStaff.username || ""}
+                                placeholder="กรอกusernameใหม่"
+                                onChange={e => setEditStaff({ ...editStaff, username: e.target.value })}
+                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                            />
                         </div>
-
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700">รหัสผ่านใหม่</label>
                             <div className="relative">
@@ -308,17 +275,6 @@ function SInfo() {
                                 className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
                             />
                         </div>
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Username</label>
-                            <input
-                                type="text"
-                                value={editStaff.username || ""}
-                                placeholder="กรอกชื่อบัญชีเจ้าหน้าที่ใหม่"
-                                onChange={(e) => setEditStaff({ ...editStaff, username: e.target.value })}
-                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                            />
-                        </div>
-
                         <div className="flex justify-end space-x-2">
                             <button
                                 className="px-4 py-2 bg-gray-300 rounded-3xl text-sm hover:bg-red-600 hover:scale-105 transition-all duration-300 ease-in-out"

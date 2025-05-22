@@ -24,6 +24,7 @@ function Assign() {
     const dropdownRef = useRef(null); // สำหรับดรอปดาวน์อาจารย์
     const dropdownStaffRef = useRef(null); // สำหรับดรอปดาวน์เจ้าหน้าที่
     const navigate = useNavigate();
+    const [createdDoc, setCreatedDoc] = useState('');
     axios.defaults.withCredentials = true;
     registerLocale("th", th);
 
@@ -142,7 +143,7 @@ function Assign() {
         try {
             const response = await axios.post('http://localhost:8000/assignation/create', {
                 eventName,
-                eventDateStart: eventDateStart || null, // หากไม่มีค่าให้ส่ง null
+                eventDateStart: eventDateStart || null,
                 eventDateEnd: eventDateEnd || null,
                 a_number: number,
                 docName,
@@ -150,6 +151,7 @@ function Assign() {
                 selectedTeachers,
                 selectedStaff,
                 link,
+                createdDoc: createdDoc || null,
             },
                 {
                     withCredentials: true, // ย้ายมาไว้ที่นี่
@@ -214,6 +216,7 @@ function Assign() {
         setDocName('');
         setDetail('');
         setLink('');
+        setCreatedDoc('');
     };
 
     const handleResetSelections = () => {
@@ -250,6 +253,25 @@ function Assign() {
                             />
                         </div>
                         <div className="flex gap-2">
+                            <div className='flex-1'>
+                                <label className="block mb-1 text-sm text-gray-600">วันที่ออกเอกสาร</label>
+                                <DatePicker
+                                    selected={createdDoc ? new Date(createdDoc) : null}
+                                    onChange={(date) =>
+                                        setCreatedDoc(date ? date.toISOString().split("T")[0] : "")
+                                    }
+                                    dateFormat="dd/MM/yy"
+                                    locale="th"
+                                    customInput={
+                                        <button
+                                            type="button"
+                                            className="w-40 px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                        >
+                                            {createdDoc ? formatDate(createdDoc) : "เลือกวันที่"}
+                                        </button>
+                                    }
+                                />
+                            </div>
                             <div className="flex-1">
                                 <label className="block mb-1 text-sm text-gray-600">วันที่เริ่มต้น</label>
                                 <DatePicker
@@ -262,7 +284,7 @@ function Assign() {
                                     customInput={
                                         <button
                                             type="button"
-                                            className="w-full px-6 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            className="w-40 px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         >
                                             {eventDateStart ? formatDate(eventDateStart) : "เลือกวันที่"}
                                         </button>
@@ -281,14 +303,16 @@ function Assign() {
                                     customInput={
                                         <button
                                             type="button"
-                                            className="w-full px-6 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                            className="w-40 px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#000066]"
                                         >
                                             {eventDateEnd ? formatDate(eventDateEnd) : "เลือกวันที่"}
                                         </button>
                                     }
                                 />
                             </div>
-                            <div>
+                        </div>
+                        <div className="flex gap-2">
+                            <div className="flex-1">
                                 <label className="block mb-1 text-sm text-gray-600">เลขคำสั่ง</label>
                                 <input
                                     type="text"
@@ -298,18 +322,17 @@ function Assign() {
                                     placeholder="เลขคำสั่ง"
                                 />
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block mb-1 text-sm text-gray-600">ชื่อเอกสาร</label>
-                            <input
-                                type="text"
-                                value={docName}
-                                onChange={(e) => setDocName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                placeholder="ชื่อเอกสาร"
-                                required
-                            />
+                            <div className="flex-1">
+                                <label className="block mb-1 text-sm text-gray-600">ชื่อเอกสาร</label>
+                                <input
+                                    type="text"
+                                    value={docName}
+                                    onChange={(e) => setDocName(e.target.value)}
+                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                    placeholder="ชื่อเอกสาร"
+                                    required
+                                />
+                            </div>
                         </div>
                         <div>
                             <label className="block mb-1 text-sm text-gray-600">รายละเอียด</label>

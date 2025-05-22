@@ -65,7 +65,7 @@ const StaffController = {
 
     async updateStaff(req, res) {
         const staffId = req.params.id;
-        const { s_name, username, oldPassword, newPassword } = req.body;
+        const { s_name, username, newPassword } = req.body;
 
         try {
             // อัปเดตชื่อเจ้าหน้าที่ในตาราง staff
@@ -74,40 +74,27 @@ const StaffController = {
                 return res.status(404).json({ error: 'Staff not found' });
             }
 
-            // อัปเดต username และ/หรือ password (กรณีเปลี่ยนรหัสผ่านต้องใช้ oldPassword ด้วย)
-            if (username || (oldPassword && newPassword)) {
-                let updateFields = [];
-                let params = [];
+            // อัปเดต username และ/หรือ password (ไม่ต้องเช็ครหัสผ่านเดิม)
+            let updateFields = [];
+            let params = [];
 
-                if (username) {
-                    updateFields.push('username = ?');
-                    params.push(username);
-                }
+            if (username) {
+                updateFields.push('username = ?');
+                params.push(username);
+            }
 
-                if (oldPassword && newPassword) {
-                    // ตรวจสอบรหัสผ่านเก่าก่อนอัปเดตรหัสผ่านใหม่
-                    const [rows] = await db.query('SELECT password FROM admin WHERE s_ID = ?', [staffId]);
-                    if (rows.length === 0) {
-                        return res.status(404).json({ error: 'Admin record not found' });
-                    }
+            if (newPassword) {
+                const hashedPassword = await bcrypt.hash(newPassword, 10);
+                updateFields.push('password = ?');
+                params.push(hashedPassword);
+            }
 
-                    const isPasswordValid = await bcrypt.compare(oldPassword, rows[0].password);
-                    if (!isPasswordValid) {
-                        return res.status(400).json({ error: 'Old password is incorrect' });
-                    }
-
-                    const hashedPassword = await bcrypt.hash(newPassword, 10);
-                    updateFields.push('password = ?');
-                    params.push(hashedPassword);
-                }
-
-                if (updateFields.length > 0) {
-                    params.push(staffId);
-                    await db.query(
-                        `UPDATE admin SET ${updateFields.join(', ')} WHERE s_ID = ?`,
-                        params
-                    );
-                }
+            if (updateFields.length > 0) {
+                params.push(staffId);
+                await db.query(
+                    `UPDATE admin SET ${updateFields.join(', ')} WHERE s_ID = ?`,
+                    params
+                );
             }
 
             res.json({ id: staffId, s_name, username });

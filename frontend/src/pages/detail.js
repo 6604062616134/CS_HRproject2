@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import NavbarPersonal from "../components/navbar-personal";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function Detail({ type: propType }) {
     const params = useParams();
@@ -28,10 +30,11 @@ function Detail({ type: propType }) {
         detail: '',
         eventDateStart: '',
         eventDateEnd: '',
+        createdDoc: '',
+        linkFile: '',
     });
     axios.defaults.withCredentials = true;
 
-    // ดึง role และ t_ID
     useEffect(() => {
         const fetchUserRole = async () => {
             try {
@@ -56,7 +59,6 @@ function Detail({ type: propType }) {
         // eslint-disable-next-line
     }, []);
 
-    // ถ้าไม่ใช่ teacher หรือ path ถูกต้องแล้ว ให้แสดงข้อมูล
     const type = role === "teacher" ? "teacher" : propType;
     const id = role === "teacher" && tID ? tID : params.id;
 
@@ -238,20 +240,38 @@ function Detail({ type: propType }) {
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-700 print:hidden text-left">วันที่เริ่มต้น</label>
-                            <input
-                                type="date"
+                            <DatePicker
+                                selected={startDate ? new Date(startDate) : null}
+                                onChange={date => setStartDate(date ? date.toISOString().split("T")[0] : "")}
+                                dateFormat="dd/MM/yyyy"
+                                locale="th"
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
+                                customInput={
+                                    <input
+                                        type="text"
+                                        className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
+                                        readOnly
+                                    />
+                                }
+                                placeholderText="ว/ด/ป"
                             />
                         </div>
                         <div>
                             <label className="block text-xs font-medium text-gray-700 print:hidden text-left">วันที่สิ้นสุด</label>
-                            <input
-                                type="date"
+                            <DatePicker
+                                selected={endDate ? new Date(endDate) : null}
+                                onChange={date => setEndDate(date ? date.toISOString().split("T")[0] : "")}
+                                dateFormat="dd/MM/yyyy"
+                                locale="th"
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
-                                value={endDate}
-                                onChange={(e) => setEndDate(e.target.value)}
+                                customInput={
+                                    <input
+                                        type="text"
+                                        className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
+                                        readOnly
+                                    />
+                                }
+                                placeholderText="ว/ด/ป"
                             />
                         </div>
                         <button
@@ -284,17 +304,18 @@ function Detail({ type: propType }) {
                         <thead>
                             <tr className="bg-gray-100">
                                 <th className="border border-gray-300 px-4 py-2 w-12 text-xs">ลำดับ</th>
-                                <th className="border border-gray-300 px-4 py-2 w-12 text-xs">เลขคำสั่ง</th>
                                 <th className="border border-gray-300 px-4 py-2 w-12 text-xs">ชื่อเอกสาร</th>
-                                <th className="border border-gray-300 px-4 py-2 w-1/3 text-xs">ชื่อกิจกรรม</th>
-                                <th className="border border-gray-300 px-4 py-2 w-24 text-xs">รายละเอียด</th>
+                                <th className="border border-gray-300 px-4 py-2 w-8 text-xs">วันที่ออกเอกสาร</th>
+                                <th className="border border-gray-300 px-4 py-2 w-12 text-xs">เลขคำสั่ง</th>
+                                <th className="border border-gray-300 px-4 py-2 w-1/4 text-xs">ชื่อกิจกรรม</th>
+                                <th className="border border-gray-300 px-4 py-2 w-48 text-xs">รายละเอียด</th>
                                 <th
-                                    className="border border-gray-300 px-4 py-2 w-12 text-xs cursor-pointer hover:bg-gray-200"
+                                    className="border border-gray-300 px-4 py-2 w-8 text-xs cursor-pointer hover:bg-gray-200"
                                     onClick={toggleSortOrder}
                                 >
                                     วันที่เริ่มต้น {sortOrder === "asc" ? <span className="print:hidden">▲</span> : <span className="print:hidden">▼</span>}
                                 </th>
-                                <th className="border border-gray-300 px-4 py-2 text-xs w-12">วันที่สิ้นสุด</th>
+                                <th className="border border-gray-300 px-4 py-2 text-xs w-8">วันที่สิ้นสุด</th>
                                 <th className="border border-gray-300 px-4 py-2 text-xs w-12 print:hidden">ลิงค์ไฟล์</th>
                                 {role !== 'staff' && role !== 'teacher' && (
                                     <th className="border border-gray-300 px-4 py-2 w-8 text-xs print:hidden">แก้ไข</th>
@@ -322,14 +343,17 @@ function Detail({ type: propType }) {
                                         return (
                                             <tr key={`${assignation.a_number}-${index}`} className="text-center">
                                                 <td className="border border-gray-300 px-4 py-2 text-xs">{index + 1}</td>
-                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">{assignation.a_number}</td>
                                                 <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">
                                                     {assignation.docName}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[180px] text-xs">
+                                                <td className="border border-gray-300 px-4 py-2 text-xs">
+                                                    {assignation.createdDoc ? formatDate(assignation.createdDoc) : '-'}
+                                                </td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">{assignation.a_number}</td>
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[120px] text-xs">
                                                     {assignation.eventName}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[200px] text-left text-xs">
+                                                <td className="border border-gray-300 px-4 py-2 break-words whitespace-normal max-w-[240px] text-left text-xs">
                                                     {assignation.detail}
                                                 </td>
                                                 <td className="border border-gray-300 px-4 py-2 text-xs">
@@ -431,20 +455,62 @@ function Detail({ type: propType }) {
                                 <div className="flex gap-4">
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">วันที่เริ่มต้น</label>
-                                        <input
-                                            type="date"
-                                            value={editData.eventDateStart}
-                                            onChange={(e) => setEditData({ ...editData, eventDateStart: e.target.value })}
+                                        <DatePicker
+                                            selected={editData.eventDateStart ? new Date(editData.eventDateStart) : null}
+                                            onChange={date =>
+                                                setEditData({ ...editData, eventDateStart: date ? date.toISOString().split("T")[0] : "" })
+                                            }
+                                            dateFormat="dd/MM/yyyy"
+                                            locale="th"
                                             className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            customInput={
+                                                <input
+                                                    type="text"
+                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    readOnly
+                                                />
+                                            }
+                                            placeholderText="ว/ด/ป"
                                         />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700">วันที่สิ้นสุด</label>
-                                        <input
-                                            type="date"
-                                            value={editData.eventDateEnd}
-                                            onChange={(e) => setEditData({ ...editData, eventDateEnd: e.target.value })}
+                                        <DatePicker
+                                            selected={editData.eventDateEnd ? new Date(editData.eventDateEnd) : null}
+                                            onChange={date =>
+                                                setEditData({ ...editData, eventDateEnd: date ? date.toISOString().split("T")[0] : "" })
+                                            }
+                                            dateFormat="dd/MM/yyyy"
+                                            locale="th"
                                             className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            customInput={
+                                                <input
+                                                    type="text"
+                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    readOnly
+                                                />
+                                            }
+                                            placeholderText="ว/ด/ป"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">วันที่ออกเอกสาร</label>
+                                        <DatePicker
+                                            selected={editData.createdDoc ? new Date(editData.createdDoc) : null}
+                                            onChange={date =>
+                                                setEditData({ ...editData, createdDoc: date ? date.toISOString().split("T")[0] : "" })
+                                            }
+                                            dateFormat="dd/MM/yyyy"
+                                            locale="th"
+                                            className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            customInput={
+                                                <input
+                                                    type="text"
+                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    readOnly
+                                                />
+                                            }
+                                            placeholderText="ว/ด/ป"
                                         />
                                     </div>
                                 </div>

@@ -100,14 +100,7 @@ function TInfo() {
     };
 
     const handleSave = async () => {
-        const oldPwd = passwords[editTeacher.t_ID]?.oldPassword;
         const newPwd = passwords[editTeacher.t_ID]?.newPassword;
-        if ((oldPwd && !newPwd) || (!oldPwd && newPwd)) {
-            return alert("กรุณากรอกรหัสผ่านเดิมและรหัสผ่านใหม่ให้ครบทั้งสองช่อง");
-        }
-        if (oldPwd && newPwd && oldPwd === newPwd) {
-            return alert("รหัสผ่านใหม่ต้องไม่เหมือนกับรหัสผ่านเดิม");
-        }
         try {
             const res = await axios.put(
                 `http://localhost:8000/teacher/update/${editTeacher.t_ID}`,
@@ -118,7 +111,6 @@ function TInfo() {
                     t_tel: editTeacher.t_tel,
                     t_email: editTeacher.t_email,
                     t_AcademicRanks: editTeacher.t_AcademicRanks,
-                    oldPassword: oldPwd || "",
                     newPassword: newPwd || "",
                 },
                 { withCredentials: true }
@@ -297,35 +289,17 @@ function TInfo() {
                             </button>
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">รหัสผ่านเดิม</label>
-                            <div className="relative">
-                                <input
-                                    type={showOldPassword ? "text" : "password"}
-                                    value={passwords[editTeacher.t_ID]?.oldPassword || ""}
-                                    placeholder="กรอกรหัสผ่านเดิม"
-                                    onChange={(e) =>
-                                        setPasswords((prev) => ({
-                                            ...prev,
-                                            [editTeacher.t_ID]: {
-                                                ...prev[editTeacher.t_ID],
-                                                oldPassword: e.target.value,
-                                            },
-                                        }))
-                                    }
-                                    className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowOldPassword(!showOldPassword)}
-                                    className="absolute inset-y-0 right-3 flex items-center text-sm text-blue-500 hover:text-blue-700"
-                                >
-                                    {showOldPassword ? "ซ่อน" : "แสดง"}
-                                </button>
-                            </div>
+                            <label className="block text-sm font-medium text-gray-700">Username</label>
+                            <input
+                                type="text"
+                                value={editTeacher.username || ""}
+                                placeholder="กรอกusernameใหม่"
+                                onChange={e => setEditTeacher({ ...editTeacher, username: e.target.value })}
+                                className="mt-1 block w-full border border-gray-300 rounded-3xl shadow-sm p-2 focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                            />
                         </div>
-
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">รหัสผ่านใหม่</label>
+                            <label className="block text-sm font-medium text-gray-700">รีเซ็ตรหัสผ่าน</label>
                             <div className="relative">
                                 <input
                                     type={showNewPassword ? "text" : "password"}
