@@ -51,14 +51,7 @@ const UserController = {
 
         } catch (error) {
             console.error('Error during login:', error);
-            const msg = error.response?.data?.error;
-            if (msg === 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง') {
-                alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
-            } else if (msg === 'เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่') {
-                alert('เซสชั่นหมดอายุ กรุณาเข้าสู่ระบบใหม่');
-            } else {
-                alert(msg || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
-            }
+            return res.status(500).json({ error: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ' });
         }
     },
 
