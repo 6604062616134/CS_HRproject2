@@ -242,7 +242,15 @@ function Detail({ type: propType }) {
                             <label className="block text-xs font-medium text-gray-700 print:hidden text-left">วันที่เริ่มต้น</label>
                             <DatePicker
                                 selected={startDate ? new Date(startDate) : null}
-                                onChange={date => setStartDate(date ? date.toISOString().split("T")[0] : "")}
+                                onChange={date => {
+                                    if (!date) {
+                                        setStartDate("");
+                                    } else {
+                                        const d = new Date(date);
+                                        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                        setStartDate(d.toISOString().split("T")[0]);
+                                    }
+                                }}
                                 dateFormat="dd/MM/yyyy"
                                 locale="th"
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
@@ -260,7 +268,15 @@ function Detail({ type: propType }) {
                             <label className="block text-xs font-medium text-gray-700 print:hidden text-left">วันที่สิ้นสุด</label>
                             <DatePicker
                                 selected={endDate ? new Date(endDate) : null}
-                                onChange={date => setEndDate(date ? date.toISOString().split("T")[0] : "")}
+                                onChange={date => {
+                                    if (!date) {
+                                        setEndDate("");
+                                    } else {
+                                        const d = new Date(date);
+                                        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                        setEndDate(d.toISOString().split("T")[0]);
+                                    }
+                                }}
                                 dateFormat="dd/MM/yyyy"
                                 locale="th"
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
@@ -458,7 +474,16 @@ function Detail({ type: propType }) {
                                         <DatePicker
                                             selected={editData.eventDateStart ? new Date(editData.eventDateStart) : null}
                                             onChange={date =>
-                                                setEditData({ ...editData, eventDateStart: date ? date.toISOString().split("T")[0] : "" })
+                                                setEditData({
+                                                    ...editData,
+                                                    eventDateStart: date
+                                                        ? (() => {
+                                                            const d = new Date(date);
+                                                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                            return d.toISOString().split("T")[0];
+                                                        })()
+                                                        : ""
+                                                })
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"
@@ -478,7 +503,16 @@ function Detail({ type: propType }) {
                                         <DatePicker
                                             selected={editData.eventDateEnd ? new Date(editData.eventDateEnd) : null}
                                             onChange={date =>
-                                                setEditData({ ...editData, eventDateEnd: date ? date.toISOString().split("T")[0] : "" })
+                                                setEditData({
+                                                    ...editData,
+                                                    eventDateEnd: date
+                                                        ? (() => {
+                                                            const d = new Date(date);
+                                                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                            return d.toISOString().split("T")[0];
+                                                        })()
+                                                        : ""
+                                                })
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"
@@ -498,7 +532,16 @@ function Detail({ type: propType }) {
                                         <DatePicker
                                             selected={editData.createdDoc ? new Date(editData.createdDoc) : null}
                                             onChange={date =>
-                                                setEditData({ ...editData, createdDoc: date ? date.toISOString().split("T")[0] : "" })
+                                                setEditData({
+                                                    ...editData,
+                                                    createdDoc: date
+                                                        ? (() => {
+                                                            const d = new Date(date);
+                                                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                            return d.toISOString().split("T")[0];
+                                                        })()
+                                                        : ""
+                                                })
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"

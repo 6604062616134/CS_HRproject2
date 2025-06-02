@@ -116,7 +116,15 @@ function AdminReport() {
                     {/* ค้นหาจากวันที่ส่ง */}
                     <DatePicker
                         selected={searchDate ? new Date(searchDate) : null}
-                        onChange={date => setSearchDate(date ? date.toISOString().split("T")[0] : "")}
+                        onChange={date => {
+                            if (!date) {
+                                setSearchDate("");
+                            } else {
+                                const d = new Date(date);
+                                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                setSearchDate(d.toISOString().split("T")[0]);
+                            }
+                        }}
                         dateFormat="dd/MM/yy"
                         locale="th"
                         customInput={

@@ -231,9 +231,9 @@ function Assign() {
     }
 
     return (
-        <div>
+        <div className="flex flex-col min-h-screen">
             <Navbar />
-            <div className="flex flex-col items-center mt-20">
+            <div className="flex flex-col items-center flex-1 justify-center mt-10 mb-4 w-full">
                 <form onSubmit={handleSubmit} className="w-full max-w-5xl flex gap-8">
                     {/* ส่วนช่องกรอกข้อมูล */}
                     <div className="flex-1 space-y-6">
@@ -249,11 +249,11 @@ function Assign() {
                         </div>
                         <div>
                             <label className="block mb-1 text-sm text-gray-600">ชื่อกิจกรรม</label>
-                            <input
+                            <textarea
                                 type="text"
                                 value={eventName}
                                 onChange={(e) => setEventName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-24 resize-none"
                                 placeholder="ชื่อกิจกรรม"
                                 required
                             />
@@ -317,42 +317,39 @@ function Assign() {
                                 />
                             </div>
                         </div>
-                        <div className="flex gap-2">
-                            <div className="flex-1">
-                                <label className="block mb-1 text-sm text-gray-600">เลขคำสั่ง</label>
-                                <input
-                                    type="text"
-                                    value={number}
-                                    onChange={(e) => setNumber(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                    placeholder="เลขคำสั่ง"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <label className="block mb-1 text-sm text-gray-600">ชื่อเอกสาร</label>
-                                <input
-                                    type="text"
-                                    value={docName}
-                                    onChange={(e) => setDocName(e.target.value)}
-                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
-                                    placeholder="ชื่อเอกสาร"
-                                    required
-                                />
-                            </div>
+                        <div className="flex-1">
+                            <label className="block mb-1 text-sm text-gray-600">เลขคำสั่ง</label>
+                            <input
+                                type="text"
+                                value={number}
+                                onChange={(e) => setNumber(e.target.value)}
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                placeholder="เลขคำสั่ง"
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <label className="block mb-1 text-sm text-gray-600">ชื่อเอกสาร</label>
+                            <input
+                                type="text"
+                                value={docName}
+                                onChange={(e) => setDocName(e.target.value)}
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066]"
+                                placeholder="ชื่อเอกสาร"
+                                required
+                            />
                         </div>
                         <div>
                             <label className="block mb-1 text-sm text-gray-600">รายละเอียด</label>
                             <textarea
                                 value={detail}
                                 onChange={(e) => setDetail(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-60 resize-none"
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-72 resize-none"
                                 placeholder="รายละเอียดงาน"
                                 required
                             />
                         </div>
                     </div>
-
-                    <div className='flex flex-col w-1/2 gap-4 mb-2'>
+                    <div className="flex flex-col w-1/2 gap-4 mb-2">
                         <div className="flex-1 p-4 rounded-3xl border relative h-[455px] overflow-visible">
                             <div className="flex items-center mb-4 gap-4">
                                 <h3 className="font-medium text-gray-800">บุคลากร</h3>

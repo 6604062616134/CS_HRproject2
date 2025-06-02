@@ -243,7 +243,13 @@ function NavbarProject({ fetchData }) {
                                             onChange={date =>
                                                 setFormData(prev => ({
                                                     ...prev,
-                                                    datetime: date ? date.toISOString().split("T")[0] : ""
+                                                    datetime: date
+                                                        ? (() => {
+                                                            const d = new Date(date);
+                                                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                            return d.toISOString().split("T")[0];
+                                                        })()
+                                                        : ""
                                                 }))
                                             }
                                             dateFormat="dd/MM/yy"
