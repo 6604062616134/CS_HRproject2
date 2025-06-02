@@ -224,6 +224,12 @@ function Assign() {
         setSelectedStaff([]);    // ล้างรายชื่อเจ้าหน้าที่ที่เลือก
     };
 
+    function toLocalDateString(date) {
+        const d = new Date(date);
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        return d.toISOString().split('T')[0];
+    }
+
     return (
         <div>
             <Navbar />
@@ -257,8 +263,8 @@ function Assign() {
                                 <label className="block mb-1 text-sm text-gray-600">วันที่ออกเอกสาร</label>
                                 <DatePicker
                                     selected={createdDoc ? new Date(createdDoc) : null}
-                                    onChange={(date) =>
-                                        setCreatedDoc(date ? date.toISOString().split("T")[0] : "")
+                                    onChange={date =>
+                                        setCreatedDoc(date ? toLocalDateString(date) : "")
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
@@ -276,8 +282,8 @@ function Assign() {
                                 <label className="block mb-1 text-sm text-gray-600">วันที่เริ่มต้น</label>
                                 <DatePicker
                                     selected={eventDateStart ? new Date(eventDateStart) : null}
-                                    onChange={(date) =>
-                                        setEventDateStart(date ? date.toISOString().split("T")[0] : "")
+                                    onChange={date =>
+                                        setEventDateStart(date ? toLocalDateString(date) : "")
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
@@ -295,8 +301,8 @@ function Assign() {
                                 <label className="block mb-1 text-sm text-gray-600">วันที่สิ้นสุด</label>
                                 <DatePicker
                                     selected={eventDateEnd ? new Date(eventDateEnd) : null}
-                                    onChange={(date) =>
-                                        setEventDateEnd(date ? date.toISOString().split("T")[0] : "")
+                                    onChange={date =>
+                                        setEventDateEnd(date ? toLocalDateString(date) : "")
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
