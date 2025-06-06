@@ -174,7 +174,9 @@ function Project() {
         }
     };
 
-    const NavbarComponent = role === "staff" ? NavbarPersonal : NavbarProject;
+    const NavbarComponent = role === "staff"
+    ? NavbarPersonal
+    : (props) => <NavbarProject {...props} fetchData={fetchData} />;
 
     return (
         <div className="flex flex-col h-screen">

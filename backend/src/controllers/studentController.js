@@ -37,6 +37,7 @@ const StudentController = {
             );
 
             res.status(200).json({ message: 'Student thesis info created successfully' });
+            return;
         } catch (error) {
             console.error('Error creating student thesis info:', error);
             res.status(500).json({ error: 'Internal server error' });

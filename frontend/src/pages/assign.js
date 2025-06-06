@@ -231,12 +231,15 @@ function Assign() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-gray-50">
             <Navbar />
-            <div className="flex flex-col items-center flex-1 justify-center mt-10 mb-4 w-full">
-                <form onSubmit={handleSubmit} className="w-full max-w-5xl flex gap-8">
+            <div className="flex flex-col items-center flex-1 justify-center mt-6 mb-4 w-full px-2 overflow-y-auto">
+                <form
+                    onSubmit={handleSubmit}
+                    className="w-full max-w-5xl flex flex-col lg:flex-row gap-8"
+                >
                     {/* ส่วนช่องกรอกข้อมูล */}
-                    <div className="flex-1 space-y-6">
+                    <div className="w-full lg:flex-1 space-y-6">
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-semibold text-gray-800">กิจกรรมบุคลากร</h2>
                             <button
@@ -253,13 +256,13 @@ function Assign() {
                                 type="text"
                                 value={eventName}
                                 onChange={(e) => setEventName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-24 resize-none"
+                                className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] min-h-[80px] max-h-[160px] resize-y"
                                 placeholder="ชื่อกิจกรรม"
                                 required
                             />
                         </div>
-                        <div className="flex gap-2">
-                            <div className='flex-1'>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <div className="flex-1">
                                 <label className="block mb-1 text-sm text-gray-600">วันที่ออกเอกสาร</label>
                                 <DatePicker
                                     selected={createdDoc ? new Date(createdDoc) : null}
@@ -343,15 +346,15 @@ function Assign() {
                             <textarea
                                 value={detail}
                                 onChange={(e) => setDetail(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-72 resize-none"
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] min-h-[180px] max-h-[300px] resize-y"
                                 placeholder="รายละเอียดงาน"
                                 required
                             />
                         </div>
                     </div>
-                    <div className="flex flex-col w-1/2 gap-4 mb-2">
-                        <div className="flex-1 p-4 rounded-3xl border relative h-[455px] overflow-visible">
-                            <div className="flex items-center mb-4 gap-4">
+                    <div className="w-full lg:w-1/2 flex flex-col gap-4 mb-2">
+                        <div className="flex-1 p-4 rounded-3xl border relative max-h-[80vh] overflow-y-auto">
+                            <div className="flex items-center mb-4 gap-4 flex-wrap">
                                 <h3 className="font-medium text-gray-800">บุคลากร</h3>
                                 <div className="relative" ref={dropdownRef}>
                                     <div
@@ -467,7 +470,7 @@ function Assign() {
                                     รีเซ็ตรายการที่เลือก
                                 </button>
                             </div>
-                            <div className="max-h-[320px] overflow-y-auto pb-2">
+                            <div className="max-h-[300px] overflow-y-auto pb-2">
                                 {selectedTeachers.length > 0 || selectedStaff.length > 0 ? (
                                     <>
                                         {/* แสดงรายชื่ออาจารย์ที่เลือก */}
@@ -502,7 +505,7 @@ function Assign() {
                             <textarea
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
-                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] h-24 resize-none" // ลดความสูงจาก h-40 เป็น h-32
+                                className="w-full px-4 py-4 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-[#000066] min-h-[80px] max-h-[160px] resize-y"
                                 placeholder="เช่น google drive"
                             />
                         </div>

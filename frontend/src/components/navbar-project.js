@@ -44,9 +44,8 @@ function NavbarProject({ fetchData }) {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); // ป้องกันการรีเฟรชหน้า
+        e.preventDefault();
 
-        // ตรวจสอบว่ามีการกรอกข้อมูลในฟิลด์ใดฟิลด์หนึ่งหรือไม่
         const isFormEmpty = Object.values(formData).every((value) => value.trim() === '');
         if (isFormEmpty) {
             alert('กรุณากรอกข้อมูลอย่างน้อย 1 ช่อง');
@@ -54,37 +53,48 @@ function NavbarProject({ fetchData }) {
         }
 
         try {
-            const response = await axios.post('http://localhost:8000/student/create', formData,
-                {
-                    withCredentials: true,
-                }
-            );
-            if (response.status === 200) {
-                alert('บันทึกข้อมูลสำเร็จ');
-                fetchData(); // โหลดข้อมูลใหม่
-                handleModalToggle(); // ปิด Modal อัตโนมัติ
-                setFormData({
-                    datetime: '',
-                    thesisnameTH: '',
-                    thesisnameEN: '',
-                    studentCode1: '',
-                    studentCode2: '',
-                    FLname1: '',
-                    FLname2: '',
-                    chairman: '',
-                    director: '',
-                    MainMentor: '',
-                    CoMentor: '',
-                    year: '',
-                    room: '',
-                    grade: '',
-                    note: '',
-                }); // เคลียร์ข้อมูลในฟอร์ม
-            }
+            const response = await axios.post('http://localhost:8000/student/create', formData, {
+                withCredentials: true,
+            });
+            console.log('response:', response);
+            alert('บันทึกข้อมูลสำเร็จ');
+            setFormData({
+                datetime: '',
+                thesisnameTH: '',
+                thesisnameEN: '',
+                studentCode1: '',
+                studentCode2: '',
+                FLname1: '',
+                FLname2: '',
+                chairman: '',
+                director: '',
+                MainMentor: '',
+                CoMentor: '',
+                year: '',
+                room: '',
+                grade: '',
+                note: '',
+            });
+            fetchData();
+            handleModalToggle();
+
         } catch (error) {
-            console.error('Error creating student thesis info:', error);
+            console.error('Axios error:', error);
+
+            if (error.response) {
+                // Response error (เช่น 400, 500)
+                console.error('Response error:', error.response.status);
+            } else if (error.request) {
+                // Request ถูกส่งแล้ว แต่ไม่มี response กลับมา
+                console.error('No response received:', error.request);
+            } else {
+                // Error อื่น ๆ
+                console.error('Other error:', error.message);
+            }
+
             alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
         }
+
     };
 
     useEffect(() => {
