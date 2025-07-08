@@ -7,6 +7,46 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function Detail({ type: propType }) {
+    const renderCustomHeader = ({
+        date,
+        changeYear,
+        changeMonth,
+        decreaseMonth,
+        increaseMonth,
+        prevMonthButtonDisabled,
+        nextMonthButtonDisabled
+    }) => (
+        <div className="flex justify-between items-center px-2 py-1">
+            <button type="button" onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>{"<"}</button>
+            <select
+                value={date.getFullYear()}
+                onChange={({ target: { value } }) => changeYear(Number(value))}
+            >
+                {Array.from({ length: 20 }, (_, i) => {
+                    const year = new Date().getFullYear() - 10 + i;
+                    return (
+                        <option key={year} value={year}>
+                            {year + 543}
+                        </option>
+                    );
+                })}
+            </select>
+            <select
+                value={date.getMonth()}
+                onChange={({ target: { value } }) => changeMonth(Number(value))}
+            >
+                {["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."].map(
+                    (month, idx) => (
+                        <option key={month} value={idx}>
+                            {month}
+                        </option>
+                    )
+                )}
+            </select>
+            <button type="button" onClick={increaseMonth} disabled={nextMonthButtonDisabled}>{">"}</button>
+        </div>
+    );
+
     const params = useParams();
     const navigate = useNavigate();
     const [personDetail, setPersonDetail] = useState(null);
@@ -149,6 +189,7 @@ function Detail({ type: propType }) {
             detail: assignation.detail || '',
             eventDateStart: assignation.eventDateStart || '',
             eventDateEnd: assignation.eventDateEnd || '',
+            createdDoc: assignation.createdDoc || '', // <<--- เพิ่มบรรทัดนี้
             linkFile: assignation.linkFile || '',
         });
         setIsEditModalOpen(true);
@@ -253,6 +294,7 @@ function Detail({ type: propType }) {
                                 }}
                                 dateFormat="dd/MM/yyyy"
                                 locale="th"
+                                renderCustomHeader={renderCustomHeader}
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
                                 customInput={
                                     <input
@@ -279,6 +321,7 @@ function Detail({ type: propType }) {
                                 }}
                                 dateFormat="dd/MM/yyyy"
                                 locale="th"
+                                renderCustomHeader={renderCustomHeader}
                                 className="w-40 px-4 py-2 text-xs border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500 print:hidden"
                                 customInput={
                                     <input
@@ -487,13 +530,17 @@ function Detail({ type: propType }) {
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"
+                                            renderCustomHeader={renderCustomHeader}
                                             className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             customInput={
-                                                <input
-                                                    type="text"
-                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    readOnly
-                                                />
+                                                <button
+                                                    type="button"
+                                                    className="w-full px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    {editData.eventDateStart
+                                                        ? new Date(editData.eventDateStart).toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                                        : "ว/ด/ป"}
+                                                </button>
                                             }
                                             placeholderText="ว/ด/ป"
                                         />
@@ -516,13 +563,17 @@ function Detail({ type: propType }) {
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"
+                                            renderCustomHeader={renderCustomHeader}
                                             className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             customInput={
-                                                <input
-                                                    type="text"
-                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    readOnly
-                                                />
+                                                <button
+                                                    type="button"
+                                                    className="w-full px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    {editData.eventDateEnd
+                                                        ? new Date(editData.eventDateEnd).toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                                        : "ว/ด/ป"}
+                                                </button>
                                             }
                                             placeholderText="ว/ด/ป"
                                         />
@@ -545,13 +596,17 @@ function Detail({ type: propType }) {
                                             }
                                             dateFormat="dd/MM/yyyy"
                                             locale="th"
+                                            renderCustomHeader={renderCustomHeader}
                                             className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             customInput={
-                                                <input
-                                                    type="text"
-                                                    className="w-full px-4 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    readOnly
-                                                />
+                                                <button
+                                                    type="button"
+                                                    className="w-full px-4 py-2 border rounded-3xl bg-white text-left focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                >
+                                                    {editData.createdDoc
+                                                        ? new Date(editData.createdDoc).toLocaleDateString('th-TH', { year: 'numeric', month: '2-digit', day: '2-digit' })
+                                                        : "ว/ด/ป"}
+                                                </button>
                                             }
                                             placeholderText="ว/ด/ป"
                                         />

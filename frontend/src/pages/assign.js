@@ -8,6 +8,46 @@ import { registerLocale } from "react-datepicker";
 import th from "date-fns/locale/th";
 
 function Assign() {
+    const renderCustomHeader = ({
+        date,
+        changeYear,
+        changeMonth,
+        decreaseMonth,
+        increaseMonth,
+        prevMonthButtonDisabled,
+        nextMonthButtonDisabled
+    }) => (
+        <div className="flex justify-between items-center px-2 py-1">
+            <button type="button" onClick={decreaseMonth} disabled={prevMonthButtonDisabled}>{"<"}</button>
+            <select
+                value={date.getFullYear()}
+                onChange={({ target: { value } }) => changeYear(Number(value))}
+            >
+                {Array.from({ length: 20 }, (_, i) => {
+                    const year = new Date().getFullYear() - 10 + i;
+                    return (
+                        <option key={year} value={year}>
+                            {year + 543}
+                        </option>
+                    );
+                })}
+            </select>
+            <select
+                value={date.getMonth()}
+                onChange={({ target: { value } }) => changeMonth(Number(value))}
+            >
+                {["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."].map(
+                    (month, idx) => (
+                        <option key={month} value={idx}>
+                            {month}
+                        </option>
+                    )
+                )}
+            </select>
+            <button type="button" onClick={increaseMonth} disabled={nextMonthButtonDisabled}>{">"}</button>
+        </div>
+    );
+
     const [eventName, setEventName] = useState('');
     const [eventDateStart, setEventDateStart] = useState('');
     const [eventDateEnd, setEventDateEnd] = useState('');
@@ -271,6 +311,7 @@ function Assign() {
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
+                                    renderCustomHeader={renderCustomHeader}
                                     customInput={
                                         <button
                                             type="button"
@@ -290,6 +331,7 @@ function Assign() {
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
+                                    renderCustomHeader={renderCustomHeader}
                                     customInput={
                                         <button
                                             type="button"
@@ -309,6 +351,7 @@ function Assign() {
                                     }
                                     dateFormat="dd/MM/yy"
                                     locale="th"
+                                    renderCustomHeader={renderCustomHeader}
                                     customInput={
                                         <button
                                             type="button"
